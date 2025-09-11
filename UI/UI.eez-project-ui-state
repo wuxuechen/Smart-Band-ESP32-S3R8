@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[UI.eez-project]:/userPages/0",
+    "selectedUserPageObject": "[UI.eez-project]:/userPages/2",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
     }
@@ -70,7 +70,7 @@
           },
           {
             "type": "border",
-            "selected": 3,
+            "selected": 0,
             "location": "bottom",
             "children": [
               {
@@ -123,7 +123,6 @@
                   "type": "tabset",
                   "id": "#3e501d30-bf87-45fa-bbb0-6eb5d47a2434",
                   "weight": 1,
-                  "selected": 1,
                   "enableClose": false,
                   "children": [
                     {
@@ -190,10 +189,31 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 65,
-              "selected": 1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
+                {
+                  "type": "tab",
+                  "id": "#873d4f8d-d894-4857-8a19-75dfe0a7531e",
+                  "name": "Message",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[UI.eez-project]:/userPages/2",
+                    "permanent": false
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#c3fe41f4-746d-4a52-b33a-fe45e63e753e",
+                  "name": "Calendar",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[UI.eez-project]:/userPages/1",
+                    "permanent": true
+                  },
+                  "icon": "svg:page"
+                },
                 {
                   "type": "tab",
                   "id": "#f0c334fb-6067-4675-b149-b0ef4fcb8c63",
@@ -217,7 +237,8 @@
                   },
                   "icon": "svg:page"
                 }
-              ]
+              ],
+              "active": true
             },
             {
               "type": "row",
@@ -227,7 +248,7 @@
                 {
                   "type": "tabset",
                   "id": "#72734f15-5b9e-4766-941d-18265a0db73b",
-                  "weight": 2,
+                  "weight": 1.2343173431734318,
                   "children": [
                     {
                       "type": "tab",
@@ -237,13 +258,12 @@
                       "enableClose": false,
                       "icon": "svg:properties"
                     }
-                  ],
-                  "active": true
+                  ]
                 },
                 {
                   "type": "tabset",
                   "id": "#929c6da5-e302-412b-aa28-256006bc187a",
-                  "weight": 1,
+                  "weight": 1.7656826568265682,
                   "children": [
                     {
                       "type": "tab",
@@ -986,7 +1006,54 @@
     "[UI.eez-project]:/userPages/0[flow-state]": {
       "selection": {
         "0": {
+          "0": {
+            "$selected": true
+          },
           "1": {}
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -120,
+          "y": -140
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[UI.eez-project]:/userPages/1[flow-state]": {
+      "selection": {
+        "0": {
+          "1": {
+            "$selected": true
+          }
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -120,
+          "y": -140
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[UI.eez-project]:/userPages/2[flow-state]": {
+      "selection": {
+        "0": {
+          "0": {
+            "$selected": true
+          }
         }
       },
       "transform": {

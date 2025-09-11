@@ -116,6 +116,14 @@
       "localVariables": [],
       "userProperties": [],
       "name": "btn_hello_clicked"
+    },
+    {
+      "objID": "329aabc7-2986-40d1-edab-1bcd12263c5c",
+      "components": [],
+      "connectionLines": [],
+      "localVariables": [],
+      "userProperties": [],
+      "name": "swipe_event_cb"
     }
   ],
   "userPages": [
@@ -138,7 +146,15 @@
             "childStyles": []
           },
           "timeline": [],
-          "eventHandlers": [],
+          "eventHandlers": [
+            {
+              "objID": "f3d389b6-4f7f-4300-df4d-87a749c1da5e",
+              "eventName": "GESTURE",
+              "handlerType": "action",
+              "action": "swipe_event_cb",
+              "userData": 0
+            }
+          ],
           "leftUnit": "px",
           "topUnit": "px",
           "widthUnit": "px",
@@ -163,6 +179,7 @@
               "hiddenInEditor": false,
               "timeline": [],
               "eventHandlers": [],
+              "identifier": "label_hello",
               "leftUnit": "px",
               "topUnit": "px",
               "widthUnit": "content",
@@ -202,6 +219,7 @@
               "hiddenInEditor": false,
               "timeline": [],
               "eventHandlers": [],
+              "identifier": "btn_hello",
               "leftUnit": "px",
               "topUnit": "px",
               "widthUnit": "px",
@@ -306,6 +324,348 @@
       "top": 0,
       "width": 240,
       "height": 280,
+      "createAtStart": true,
+      "deleteOnScreenUnload": false
+    },
+    {
+      "objID": "f037b30e-510c-40a7-b273-28eb8ecc3b60",
+      "components": [
+        {
+          "objID": "f879b523-b0b5-4f16-f54f-64af96373af2",
+          "type": "LVGLScreenWidget",
+          "left": 0,
+          "top": 0,
+          "width": 240,
+          "height": 280,
+          "customInputs": [],
+          "customOutputs": [],
+          "style": {
+            "objID": "99f47217-d6ac-45c2-8adf-fd48f0ec00a2",
+            "useStyle": "default",
+            "conditionalStyles": [],
+            "childStyles": []
+          },
+          "timeline": [],
+          "eventHandlers": [
+            {
+              "objID": "1db86556-713b-4270-e770-9f3e6b40c119",
+              "eventName": "GESTURE",
+              "handlerType": "action",
+              "action": "swipe_event_cb",
+              "userData": 0
+            }
+          ],
+          "leftUnit": "px",
+          "topUnit": "px",
+          "widthUnit": "px",
+          "heightUnit": "px",
+          "children": [
+            {
+              "objID": "817c94f8-3861-401d-bcaa-ae4b84438fc8",
+              "type": "LVGLCalendarWidget",
+              "left": 5,
+              "top": 32,
+              "width": 230,
+              "height": 240,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "c5307b4d-22f8-4823-9cd2-26e9e65977ec",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "timeline": [],
+              "eventHandlers": [],
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "px",
+              "heightUnit": "px",
+              "children": [],
+              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlagType": "literal",
+              "clickableFlag": true,
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "localStyles": {
+                "objID": "f491dec2-25c7-4ea6-b82d-40b6bc3a0923"
+              },
+              "group": "",
+              "groupIndex": 0,
+              "todayYear": 2022,
+              "todayMonth": 11,
+              "todayDay": 1
+            },
+            {
+              "objID": "5889c98d-8526-46b5-c8e6-0ce74780b16b",
+              "type": "LVGLLabelWidget",
+              "left": 88,
+              "top": 0,
+              "width": 65,
+              "height": 16,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "386f067e-dcb2-4ce5-b8cb-d4605f47b447",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "timeline": [],
+              "eventHandlers": [],
+              "identifier": "calendar_label",
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "content",
+              "heightUnit": "content",
+              "children": [],
+              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlagType": "literal",
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "localStyles": {
+                "objID": "52d4cc58-1dbf-4b01-f1b5-149d8c819a1c"
+              },
+              "group": "",
+              "groupIndex": 0,
+              "text": "Calendar",
+              "textType": "literal",
+              "longMode": "WRAP",
+              "recolor": false
+            }
+          ],
+          "widgetFlags": "CLICKABLE|PRESS_LOCK|CLICK_FOCUSABLE|GESTURE_BUBBLE|SNAPPABLE|SCROLLABLE|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER",
+          "hiddenFlagType": "literal",
+          "clickableFlag": true,
+          "clickableFlagType": "literal",
+          "checkedStateType": "literal",
+          "disabledStateType": "literal",
+          "states": "",
+          "localStyles": {
+            "objID": "be7668fd-f471-4e06-9ca0-8cf468f9f319"
+          },
+          "groupIndex": 0
+        }
+      ],
+      "connectionLines": [],
+      "localVariables": [],
+      "userProperties": [],
+      "name": "Calendar",
+      "left": 0,
+      "top": 0,
+      "width": 240,
+      "height": 280,
+      "isUsedAsUserWidget": false,
+      "createAtStart": true,
+      "deleteOnScreenUnload": false
+    },
+    {
+      "objID": "17ced05c-c222-435e-ec4b-75dfe078e9e2",
+      "components": [
+        {
+          "objID": "2ce0cea9-0264-4f7a-cef6-589503bae2a8",
+          "type": "LVGLScreenWidget",
+          "left": 0,
+          "top": 0,
+          "width": 240,
+          "height": 280,
+          "customInputs": [],
+          "customOutputs": [],
+          "style": {
+            "objID": "ef2275e2-0ef9-4ace-875d-b4b9f7ca02bd",
+            "useStyle": "default",
+            "conditionalStyles": [],
+            "childStyles": []
+          },
+          "timeline": [],
+          "eventHandlers": [
+            {
+              "objID": "93bd6a64-f095-4ac7-b14d-8c1b239be87e",
+              "eventName": "GESTURE",
+              "handlerType": "action",
+              "action": "swipe_event_cb",
+              "userData": 0
+            }
+          ],
+          "leftUnit": "px",
+          "topUnit": "px",
+          "widthUnit": "px",
+          "heightUnit": "px",
+          "children": [
+            {
+              "objID": "7879b2f4-04a6-4ed7-a916-26d18bebc2f5",
+              "type": "LVGLKeyboardWidget",
+              "left": 0,
+              "top": 119,
+              "width": 240,
+              "height": 161,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "0c900a0a-095d-4947-e951-1da69bd7825d",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "timeline": [],
+              "eventHandlers": [],
+              "identifier": "keyboard",
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "px",
+              "heightUnit": "px",
+              "children": [],
+              "widgetFlags": "GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlagType": "literal",
+              "clickableFlag": true,
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "localStyles": {
+                "objID": "cbfa734c-0a30-4ce6-f35d-9283b57b8b6e",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "align": "DEFAULT"
+                    }
+                  }
+                }
+              },
+              "group": "",
+              "groupIndex": 0,
+              "textarea": "message_textarea",
+              "mode": "TEXT_LOWER"
+            },
+            {
+              "objID": "41a1ce5f-9bd3-460d-ba8a-64e1adf779e6",
+              "type": "LVGLTextareaWidget",
+              "left": 0,
+              "top": 31,
+              "width": 240,
+              "height": 78,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "1663a1c0-6bbc-4c81-c4fc-aa28167eef4e",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "timeline": [],
+              "eventHandlers": [],
+              "identifier": "message_textarea",
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "px",
+              "heightUnit": "px",
+              "children": [],
+              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_ON_FOCUS|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlagType": "literal",
+              "clickableFlag": true,
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "localStyles": {
+                "objID": "619c0dde-cb05-42b7-a801-e832e08289c6"
+              },
+              "group": "",
+              "groupIndex": 0,
+              "text": "",
+              "textType": "literal",
+              "placeholder": "",
+              "oneLineMode": false,
+              "passwordMode": false,
+              "acceptedCharacters": "",
+              "maxTextLength": 128
+            },
+            {
+              "objID": "a6c33dea-392e-415e-84fb-503f53f23cb8",
+              "type": "LVGLLabelWidget",
+              "left": 44,
+              "top": 0,
+              "width": 152,
+              "height": 16,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "b031e94a-3c3e-4955-fec7-f3d944aaff04",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "timeline": [],
+              "eventHandlers": [],
+              "identifier": "message_label",
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "content",
+              "heightUnit": "content",
+              "children": [],
+              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlagType": "literal",
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "localStyles": {
+                "objID": "31bf8443-3001-4b2f-b719-9bc2b7e08fa4"
+              },
+              "group": "",
+              "groupIndex": 0,
+              "text": "Message with Phone",
+              "textType": "literal",
+              "longMode": "WRAP",
+              "recolor": false
+            }
+          ],
+          "widgetFlags": "CLICKABLE|PRESS_LOCK|CLICK_FOCUSABLE|GESTURE_BUBBLE|SNAPPABLE|SCROLLABLE|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER",
+          "hiddenFlagType": "literal",
+          "clickableFlag": true,
+          "clickableFlagType": "literal",
+          "checkedStateType": "literal",
+          "disabledStateType": "literal",
+          "states": "",
+          "localStyles": {
+            "objID": "cc46a8b5-d910-4b50-b13a-89b2d3ccf342"
+          },
+          "groupIndex": 0
+        }
+      ],
+      "connectionLines": [],
+      "localVariables": [],
+      "userProperties": [],
+      "name": "Message",
+      "left": 0,
+      "top": 0,
+      "width": 240,
+      "height": 280,
+      "isUsedAsUserWidget": false,
       "createAtStart": true,
       "deleteOnScreenUnload": false
     }
