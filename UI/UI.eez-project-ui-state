@@ -1,7 +1,7 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[UI.eez-project]:/userPages/2",
-    "selectedBitmapObject": "[UI.eez-project]:/bitmaps/0",
+    "selectedUserPageObject": "[UI.eez-project]:/userPages/0",
+    "selectedBitmapObject": "[UI.eez-project]:/bitmaps/5",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
     }
@@ -73,6 +73,7 @@
           {
             "type": "border",
             "selected": 0,
+            "size": 41.15625,
             "location": "bottom",
             "children": [
               {
@@ -191,7 +192,7 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 50.41255289139633,
-              "selected": 3,
+              "selected": 8,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
@@ -306,7 +307,7 @@
                 {
                   "type": "tabset",
                   "id": "#72734f15-5b9e-4766-941d-18265a0db73b",
-                  "weight": 1.8874538745387455,
+                  "weight": 1.400369003690037,
                   "children": [
                     {
                       "type": "tab",
@@ -321,7 +322,7 @@
                 {
                   "type": "tabset",
                   "id": "#929c6da5-e302-412b-aa28-256006bc187a",
-                  "weight": 1.1125461254612545,
+                  "weight": 1.599630996309963,
                   "children": [
                     {
                       "type": "tab",
@@ -625,7 +626,8 @@
                       "component": "bitmaps",
                       "enableClose": false
                     }
-                  ]
+                  ],
+                  "active": true
                 },
                 {
                   "type": "tabset",
@@ -643,8 +645,7 @@
                       "component": "preview",
                       "enableClose": false
                     }
-                  ],
-                  "active": true
+                  ]
                 }
               ]
             }
@@ -1068,7 +1069,11 @@
     "[UI.eez-project]:/userPages/0[flow-state]": {
       "selection": {
         "0": {
-          "0": {}
+          "0": {},
+          "2": {},
+          "3": {
+            "$selected": true
+          }
         }
       },
       "transform": {
@@ -1131,9 +1136,7 @@
     "[UI.eez-project]:/userPages/3[flow-state]": {
       "selection": {
         "0": {
-          "0": {
-            "$selected": true
-          }
+          "0": {}
         }
       },
       "transform": {
@@ -1153,9 +1156,7 @@
     "[UI.eez-project]:/userPages/5[flow-state]": {
       "selection": {
         "0": {
-          "0": {
-            "$selected": true
-          }
+          "0": {}
         }
       },
       "transform": {
@@ -1195,9 +1196,8 @@
     "[UI.eez-project]:/userPages/6[flow-state]": {
       "selection": {
         "0": {
-          "0": {
-            "$selected": true
-          }
+          "0": {},
+          "1": {}
         }
       },
       "transform": {
@@ -1268,15 +1268,8 @@
   "lvglPart": "MAIN",
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "TEXT",
-    "MISCELLANEOUS",
-    "BACKGROUND",
-    "LAYOUT",
-    "PADDING",
     "MARGIN",
-    "BORDER",
-    "SHADOW",
-    "IMAGE"
+    "BACKGROUND"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
