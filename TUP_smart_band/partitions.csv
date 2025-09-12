@@ -1,0 +1,14 @@
+# Name,   Type, SubType, Offset,  Size,    Flags
+# The standard bootloader, partition table, and NVS partitions
+nvs,      data, nvs,     ,        24K,
+otadata,  data, ota,     ,        8K,
+phy_init, data, phy,     ,        4K,
+
+# --- Application Partitions ---
+# A very large factory app partition for development or single-app use
+factory,  app,  factory, ,        10M,
+
+# --- Data Partitions ---
+# A large file system partition for assets, files, etc.
+# This leaves ~5MB of the 16MB flash for your file system after the app.
+storage,  data, fat,     ,        5M,

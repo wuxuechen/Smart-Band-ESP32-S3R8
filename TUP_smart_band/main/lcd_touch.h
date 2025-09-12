@@ -55,8 +55,6 @@ esp_lcd_touch_handle_t tp = NULL;
 
 static const char *TAG = "TUP";
 
-static lv_obj_t *avatar;
-
 /* LCD IO and panel */
 static esp_lcd_panel_io_handle_t lcd_io = NULL;
 static esp_lcd_panel_handle_t lcd_panel = NULL;
@@ -195,17 +193,6 @@ static esp_err_t app_lvgl_init(void)
     return ESP_OK;
 }
 
-/* Example button event callback */
-static void btn_event_cb(lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    lv_obj_t *label = (lv_obj_t *)lv_event_get_user_data(e);
-    if(code == LV_EVENT_CLICKED) {
-        printf("%s", "button was clicked\n");
-        lv_label_set_text(label, "Text changed!");
-    }
-}
-
 void app_touch_init(){
 	#if USE_TOUCH
     ESP_LOGI(TAG, "Initialize I2C bus");
@@ -263,26 +250,9 @@ void app_touch_init(){
 
 static void app_main_display(void)
 {
-    lv_obj_t *scr = lv_scr_act(); // Get the active screen
-
     /* Task lock */
     lvgl_port_lock(-1);
     ui_init();
-
-    // Create a button
-/*    lv_obj_t *btn = lv_btn_create(scr);           // Create a button on the screen
-    lv_obj_set_size(btn, 120, 50);               // Set button size: width=120, height=50
-    lv_obj_center(btn);                           // Center the button on the screen
-
-    // Create a label on the button
-    lv_obj_t *label = lv_label_create(btn);      // Create a label on the button
-    lv_label_set_text(label, "Click Me");        // Set label text
-    lv_obj_center(label);                         // Center the label on the button
-
-     //Optional: add an event callback 
-    lv_obj_add_event_cb(btn, btn_event_cb, LV_EVENT_CLICKED, label);*/
-
-
     /* Task unlock */
     lvgl_port_unlock();
 }
