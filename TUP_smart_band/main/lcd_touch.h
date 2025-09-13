@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-
+ 
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_check.h"
@@ -102,6 +102,7 @@ static esp_err_t app_lcd_init(void)
         .color_space = LCD_COLOR_SPACE,
         .bits_per_pixel = LCD_BITS_PER_PIXEL,
     };
+    
     ESP_GOTO_ON_ERROR(esp_lcd_new_panel_st7789(lcd_io, &panel_config, &lcd_panel), err, TAG, "New panel failed");
 
     esp_lcd_panel_reset(lcd_panel);

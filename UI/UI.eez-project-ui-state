@@ -1,7 +1,7 @@
 {
   "navigation": {
     "selectedUserPageObject": "[UI.eez-project]:/userPages/0",
-    "selectedBitmapObject": "[UI.eez-project]:/bitmaps/5",
+    "selectedBitmapObject": "[UI.eez-project]:/bitmaps/0",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
     }
@@ -1070,10 +1070,11 @@
       "selection": {
         "0": {
           "0": {},
-          "2": {},
-          "3": {
+          "1": {
             "$selected": true
-          }
+          },
+          "2": {},
+          "3": {}
         }
       },
       "transform": {
