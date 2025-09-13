@@ -153,7 +153,7 @@ qmi_result_t qmi_read(qmi_ctx_t *ctx, qmi_data_t *data) {
     if(i2c_read_byte(ctx->device_addr, QMI8658_REG_TEMPEARTURE_L, &buf[0]) != ESP_OK) return QMI_RESULT_ERROR;
     if(i2c_read_byte(ctx->device_addr, QMI8658_REG_TEMPEARTURE_H, &buf[1]) != ESP_OK) return QMI_RESULT_ERROR;
     temp16 = ((int16_t)buf[1]<<8)|buf[0];
-    data->temperature = (float)temp16/TEMPERATURE_SENSOR_RESOLUTION;
+    data->temperature = ((float)temp16/TEMPERATURE_SENSOR_RESOLUTION-32)*5/9;
 
     return QMI_RESULT_OK;
 }
