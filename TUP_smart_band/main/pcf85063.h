@@ -42,7 +42,7 @@ const char *months[] = {
     "Dec"
 };
 
-// Helper function to initiate I2C
+/*// Helper function to initiate I2C
 esp_err_t i2c_master_init(void) {
     i2c_config_t conf = {
         .mode = I2C_MODE_MASTER,
@@ -58,7 +58,7 @@ esp_err_t i2c_master_init(void) {
         return err;
     }
     return i2c_driver_install(I2C_MASTER_NUM, conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0);
-}
+}*/
 
 // Read RTC register function
 esp_err_t rtc_read_reg(uint8_t reg_addr, uint8_t *data, size_t len) {
@@ -153,14 +153,14 @@ void rtc_task(void *pvParameters)
 void init_rtc(void)
 {
     // Initialize I2C
-    esp_err_t err = i2c_master_init();
-    if (err != ESP_OK) {
+    //esp_err_t err = i2c_master_init();
+/*    if (err != ESP_OK) {
         ESP_LOGE(TAGRTC, "I2C initialization failed");
         return;
-    }
+    }*/
 
     // Set RTC time (example: 12:30:45, 27th Sept 2024)
-    err = rtc_set_time(12, 30, 45, 5, 12, 9, 25);
+    esp_err_t  err = rtc_set_time(12, 30, 45, 5, 12, 9, 25);
     if (err == ESP_OK) {
         ESP_LOGI(TAGRTC, "Time set successfully");
     } else {
@@ -168,6 +168,6 @@ void init_rtc(void)
     }
 
     // Start RTC task
-    xTaskCreate(rtc_task, "rtc_task", 4096, NULL, 5, NULL);
+    xTaskCreate(rtc_task, "rtc_task", 8192, NULL, 5, NULL);
 }
 
