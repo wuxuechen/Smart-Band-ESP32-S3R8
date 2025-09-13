@@ -80,7 +80,9 @@ void create_screen_calendar() {
     {
         lv_obj_t *parent_obj = obj;
         {
+            // calendar_calendar
             lv_obj_t *obj = lv_calendar_create(parent_obj);
+            objects.calendar_calendar = obj;
             lv_obj_set_pos(obj, 3, 40);
             lv_obj_set_size(obj, 237, 240);
             lv_calendar_header_arrow_create(obj);
@@ -191,7 +193,6 @@ void create_screen_activity() {
     lv_obj_add_event_cb(obj, action_swipe_event_cb, LV_EVENT_GESTURE, (void *)0);
     lv_obj_set_style_bg_color(obj, lv_color_hex(0xff0f0552), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(obj, &lv_font_montserrat_22, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_bg_img_src(obj, &img_run, LV_PART_MAIN | LV_STATE_DEFAULT);
     {
         lv_obj_t *parent_obj = obj;
         {
@@ -202,6 +203,21 @@ void create_screen_activity() {
             lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_text_font(obj, &lv_font_montserrat_22, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_label_set_text(obj, "Activity");
+        }
+        {
+            lv_obj_t *obj = lv_img_create(parent_obj);
+            lv_obj_set_pos(obj, 0, 30);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_img_set_src(obj, &img_run);
+        }
+        {
+            // activity_label
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.activity_label = obj;
+            lv_obj_set_pos(obj, 84, 24);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "    acc     gyr\nx +0.00 +0.00\nx +0.00 +0.00\nz +0.00 +0.00");
         }
     }
     

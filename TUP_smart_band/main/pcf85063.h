@@ -1,7 +1,11 @@
+#ifndef RTC_HEADER_H
+#define RTC_HEADER_H
+
 #include <stdio.h>
 #include "driver/i2c.h"
 #include "esp_log.h"
 #include "esp_err.h"
+#include "extra/widgets/calendar/lv_calendar.h"
 #include "ui/screens.h"
 
 // I2C configuration
@@ -15,7 +19,9 @@
 
 #define PCF85063_ADDR        0x51      // PCF85063 I2C address
 
-static const char *TAGRTC = "PCF85063";
+
+#define TAGRTC "PCF85063"
+
 
 static const char *weekdays[7] = {
     "Mo", 
@@ -119,13 +125,17 @@ esp_err_t rtc_get_time(void) {
 	}
 	if(objects.home_date){
 		lv_label_set_text_fmt(objects.home_date, "%s %02d %s", months[month], day,  weekdays[weekday-1]);
+		lv_calendar_set_showed_date(objects.calendar_calendar, year, month+1);
+		lv_calendar_set_today_date(objects.calendar_calendar, year, month+1, day);
 	}
-    ESP_LOGI(TAGRTC, "Current Time: %02d:%02d:%02d %02d/%02d/%04d %d", hours, minutes, seconds, day, month, 2000 + year, weekday);
+    //ESP_LOGI(TAGRTC, "Current Time: %02d:%02d:%02d %02d/%02d/%04d %d", hours, minutes, seconds, day, month, 2000 + year, weekday);
     return ESP_OK;
 }
 
 // Function to set time on the RTC
-esp_err_t rtc_set_time(uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t weekday, uint8_t day, uint8_t month, uint8_t year) {
+esp_err_t rtc_set_time(uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t day,uint8_t weekday, uint8_t month, uint8_t year) {
+
+	
     uint8_t data[7] = {
         dec_to_bcd(seconds),
         dec_to_bcd(minutes),
@@ -160,7 +170,7 @@ void init_rtc(void)
     }*/
 
     // Set RTC time (example: 12:30:45, 27th Sept 2024)
-    esp_err_t  err = rtc_set_time(12, 30, 45, 5, 12, 9, 25);
+    esp_err_t  err = rtc_set_time(12, 30, 45, 13,6, 9-1, 25);
     if (err == ESP_OK) {
         ESP_LOGI(TAGRTC, "Time set successfully");
     } else {
@@ -170,4 +180,5 @@ void init_rtc(void)
     // Start RTC task
     xTaskCreate(rtc_task, "rtc_task", 8192, NULL, 5, NULL);
 }
+#endif // RTC_HEADER_H
 

@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[UI.eez-project]:/userPages/0",
+    "selectedUserPageObject": "[UI.eez-project]:/userPages/1",
     "selectedBitmapObject": "[UI.eez-project]:/bitmaps/0",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
@@ -192,7 +192,7 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 50.41255289139633,
-              "selected": 8,
+              "selected": 6,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
@@ -1094,9 +1094,10 @@
     "[UI.eez-project]:/userPages/1[flow-state]": {
       "selection": {
         "0": {
-          "1": {
+          "0": {
             "$selected": true
-          }
+          },
+          "1": {}
         }
       },
       "transform": {

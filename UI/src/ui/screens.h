@@ -19,12 +19,14 @@ typedef struct _objects_t {
     lv_obj_t *home_date;
     lv_obj_t *home_time;
     lv_obj_t *home_weather;
+    lv_obj_t *calendar_calendar;
     lv_obj_t *calendar_label;
     lv_obj_t *keyboard;
     lv_obj_t *feedback_textarea;
     lv_obj_t *feedback_label;
     lv_obj_t *obj0;
     lv_obj_t *obj1;
+    lv_obj_t *activity_label;
     lv_obj_t *obj2;
     lv_obj_t *obj3;
     lv_obj_t *update_btn;

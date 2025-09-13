@@ -442,6 +442,7 @@
               },
               "timeline": [],
               "eventHandlers": [],
+              "identifier": "calendar_calendar",
               "leftUnit": "px",
               "topUnit": "px",
               "widthUnit": "px",
@@ -1008,6 +1009,101 @@
               "textType": "literal",
               "longMode": "WRAP",
               "recolor": false
+            },
+            {
+              "objID": "405a4980-5267-4e66-b036-d1649937edd1",
+              "type": "LVGLImageWidget",
+              "left": 0,
+              "top": 30,
+              "width": 96,
+              "height": 96,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "533d80d6-acb6-4bc6-a4ea-bfd86a95dbbb",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "timeline": [],
+              "eventHandlers": [],
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "content",
+              "heightUnit": "content",
+              "children": [],
+              "widgetFlags": "ADV_HITTEST|CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlagType": "literal",
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "localStyles": {
+                "objID": "b25c7a49-8f4d-453e-bae5-174f63e5f066"
+              },
+              "group": "",
+              "groupIndex": 0,
+              "image": "run",
+              "setPivot": false,
+              "pivotX": 0,
+              "pivotY": 0,
+              "zoom": 256,
+              "angle": 0,
+              "innerAlign": "CENTER"
+            },
+            {
+              "objID": "227459fb-fae3-4229-b372-12a2bc2cea10",
+              "type": "LVGLLabelWidget",
+              "left": 84,
+              "top": 24,
+              "width": 148,
+              "height": 96,
+              "customInputs": [],
+              "customOutputs": [],
+              "style": {
+                "objID": "99495bb6-de59-41c3-c645-c0b42b60bece",
+                "useStyle": "default",
+                "conditionalStyles": [],
+                "childStyles": []
+              },
+              "timeline": [],
+              "eventHandlers": [],
+              "identifier": "activity_label",
+              "leftUnit": "px",
+              "topUnit": "px",
+              "widthUnit": "content",
+              "heightUnit": "content",
+              "children": [],
+              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "hiddenFlagType": "literal",
+              "clickableFlagType": "literal",
+              "flagScrollbarMode": "",
+              "flagScrollDirection": "",
+              "scrollSnapX": "",
+              "scrollSnapY": "",
+              "checkedStateType": "literal",
+              "disabledStateType": "literal",
+              "states": "",
+              "localStyles": {
+                "objID": "a7906ad1-dd7c-4b27-a4d3-0fc78dc3c643",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "text_color": "#ffffff"
+                    }
+                  }
+                }
+              },
+              "group": "",
+              "groupIndex": 0,
+              "text": "    acc     gyr\nx +0.00 +0.00\nx +0.00 +0.00\nz +0.00 +0.00",
+              "textType": "literal",
+              "longMode": "WRAP",
+              "recolor": false
             }
           ],
           "widgetFlags": "CLICKABLE|PRESS_LOCK|CLICK_FOCUSABLE|GESTURE_BUBBLE|SNAPPABLE|SCROLLABLE|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER",
@@ -1023,8 +1119,7 @@
               "MAIN": {
                 "DEFAULT": {
                   "bg_color": "#0f0552",
-                  "text_font": "MONTSERRAT_22",
-                  "bg_img_src": "run"
+                  "text_font": "MONTSERRAT_22"
                 }
               }
             }

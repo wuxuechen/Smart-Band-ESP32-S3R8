@@ -4,6 +4,8 @@
 #include "freertos/task.h"
 #include "driver/i2c.h"
 #include "esp_log.h"
+#include "ui/screens.h"
+#include "widgets/lv_label.h"
 
 // I2C configuration
 #define I2C_MASTER_SCL 10
@@ -158,6 +160,7 @@ qmi_result_t qmi_read(qmi_ctx_t *ctx, qmi_data_t *data) {
     return QMI_RESULT_OK;
 }
 
+static char buf[128];
 // FreeRTOS task
 void imu_task(void *arg) {
     qmi_ctx_t imu;
@@ -173,13 +176,25 @@ void imu_task(void *arg) {
 
     while(1) {
         if(qmi_read(&imu, &data) == QMI_RESULT_OK) {
-            printf("Acc: %.2f %.2f %.2f\n", data.acc_xyz.x, data.acc_xyz.y, data.acc_xyz.z);
-            printf("Gyro: %.2f %.2f %.2f\n", data.gyro_xyz.x, data.gyro_xyz.y, data.gyro_xyz.z);
-            printf("Temp: %.2f\n", data.temperature);
+            //printf("Acc: %.2f %.2f %.2f\n", data.acc_xyz.x, data.acc_xyz.y, data.acc_xyz.z);
+            //printf("Gyro: %.2f %.2f %.2f\n", data.gyro_xyz.x, data.gyro_xyz.y, data.gyro_xyz.z);
+            //printf("Temp: %.2f\n", data.temperature);
+            snprintf(buf, sizeof(buf),
+		        "   acc    gyr\n"
+			    "x %+.2f %+.2f\n"
+			    "y %+.2f %+.2f\n"
+			    "z %+.2f %+.2f\n",
+		        data.acc_xyz.x, data.gyro_xyz.x,
+		        data.acc_xyz.y, data.gyro_xyz.y,
+		        data.acc_xyz.z, data.gyro_xyz.z
+		    );
+		    if(objects.activity_label){
+				lv_label_set_text(objects.activity_label, buf);	
+			}
         } else {
             printf("IMU read error!\n");
         }
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
 

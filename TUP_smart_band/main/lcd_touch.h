@@ -16,7 +16,9 @@
 #include "esp_lvgl_port.h"
 #include "lv_demos.h"
 #include "esp_lcd_touch_cst816s.h"
+#include "ui/screens.h"
 #include "ui/ui.h"
+#include <lvgl.h>
 /* LCD size */
 #define LCD_H_RES (240)
 #define LCD_V_RES (280)
@@ -199,7 +201,7 @@ void app_touch_init(){
     ESP_LOGI(TAG, "Initialize I2C bus");
     esp_log_level_set("lcd_panel.io.i2c", ESP_LOG_NONE);
     esp_log_level_set("CST816S", ESP_LOG_NONE);
-    const i2c_config_t i2c_conf = {
+/*    const i2c_config_t i2c_conf = {
         .mode = I2C_MODE_MASTER,
         .sda_io_num = PIN_NUM_TOUCH_SDA,
         .sda_pullup_en = GPIO_PULLUP_ENABLE,
@@ -209,7 +211,7 @@ void app_touch_init(){
     };
     i2c_param_config(TOUCH_HOST, &i2c_conf);
 
-    i2c_driver_install(TOUCH_HOST, i2c_conf.mode, 0, 0, 0);
+    i2c_driver_install(TOUCH_HOST, i2c_conf.mode, 0, 0, 0);*/
 
     esp_lcd_panel_io_handle_t tp_io_handle = NULL;
     const esp_lcd_panel_io_i2c_config_t tp_io_config = ESP_LCD_TOUCH_IO_I2C_CST816S_CONFIG();

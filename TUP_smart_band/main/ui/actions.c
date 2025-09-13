@@ -46,7 +46,6 @@ void action_swipe_event_cb(lv_event_t * e){
 	}
 	
 	if(current == objects.calendar){
-
     	if(dir == LV_DIR_LEFT) {
         // Load Calendar screen with animation
         lv_scr_load_anim(objects.activity, LV_SCR_LOAD_ANIM_MOVE_LEFT, 300, 0, false);
