@@ -105,6 +105,8 @@ extern "C" {
  * #endif
  *
  */
+#define LV_USE_ANTIALIAS 1
+ 
 #define LV_VERSION_CHECK(x,y,z) (x == LVGL_VERSION_MAJOR && (y < LVGL_VERSION_MINOR || (y == LVGL_VERSION_MINOR && z <= LVGL_VERSION_PATCH)))
 
 /**
