@@ -11,14 +11,60 @@
 #include "esp_check.h"
 #include "misc/lv_area.h"
 #include "screens.h"
+#include "widgets/lv_label.h"
 #include "wifi_connect.h"
 #include "gatt_server_service_table.h"
-
+#include "ui/images.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+static int cursor_sports = 0;    
+const ext_img_desc_t sports_images[10] = {
+    { "Squats", &img_squats },
+    { "Pushups", &img_pushups },
+    { "Lunges", &img_lunges },
+    { "Burbees", &img_burbees },
+    { "Mountain Climb", &img_mountain_climb },
+    { "Jump Rope", &img_jump_rope },
+    { "Glute Bridges", &img_glute_bridges },
+    { "Superman", &img_superman },
+    { "Plank Holds", &img_plankholds },
+    { "Alternate Bird-Dog", &img_alternating_bird_dogs },
+};
+
 void action_btn_hello_clicked(lv_event_t *e) {
+}
+
+void set_coach(int i){
+	if(i==0){
+		lv_obj_add_state(objects.coach_last_btn, LV_STATE_DISABLED);   // Disable
+		lv_obj_clear_state(objects.coach_next_btn, LV_STATE_DISABLED); // Enable again
+	}else if(i==9){
+		lv_obj_add_state(objects.coach_next_btn, LV_STATE_DISABLED);   // Disable
+		lv_obj_clear_state(objects.coach_last_btn, LV_STATE_DISABLED); // Enable again
+	}else{
+		lv_obj_clear_state(objects.coach_last_btn, LV_STATE_DISABLED); // Enable again
+		lv_obj_clear_state(objects.coach_next_btn, LV_STATE_DISABLED); // Enable again
+	}
+	lv_label_set_text(objects.coach_label, sports_images[i].name);
+	lv_obj_align(objects.coach_label, LV_ALIGN_TOP_MID, 0, 2);
+	lv_img_set_src(objects.coach_img, sports_images[i].img_dsc);
+}
+
+extern void action_coach_last_btn_pressed(lv_event_t * e){
+	if(cursor_sports <= 0){
+		return;
+	}
+	cursor_sports--;
+	set_coach(cursor_sports);
+}
+extern void action_coach_next_btn_pressed(lv_event_t * e){
+	if(cursor_sports >= 9){
+		return;
+	}
+	cursor_sports++;
+	set_coach(cursor_sports);
 }
 
 extern void action_bt_switch(lv_event_t * e){
@@ -78,7 +124,7 @@ void action_swipe_event_cb(lv_event_t * e){
     	}
     	if(dir == LV_DIR_RIGHT) {
         // Load Calendar screen with animation
-        lv_scr_load_anim(objects.ota, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 300, 0, false);
+        lv_scr_load_anim(objects.coach, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 300, 0, false);
     	}
     	if(dir == LV_DIR_TOP) {
         // Load Calendar screen with animation
@@ -151,7 +197,7 @@ void action_swipe_event_cb(lv_event_t * e){
 	if(current == objects.feedback){
     	if(dir == LV_DIR_LEFT) {
         // Load Calendar screen with animation
-        lv_scr_load_anim(objects.ota, LV_SCR_LOAD_ANIM_MOVE_LEFT, 300, 0, false);
+        lv_scr_load_anim(objects.coach, LV_SCR_LOAD_ANIM_MOVE_LEFT, 300, 0, false);
     	}
     	if(dir == LV_DIR_RIGHT) {
         // Load Calendar screen with animation
@@ -167,7 +213,7 @@ void action_swipe_event_cb(lv_event_t * e){
     	}
 	}
 
-	if(current == objects.ota){
+	if(current == objects.coach){
     	if(dir == LV_DIR_LEFT) {
         // Load Calendar screen with animation
         lv_scr_load_anim(objects.calendar, LV_SCR_LOAD_ANIM_MOVE_LEFT, 300, 0, false);

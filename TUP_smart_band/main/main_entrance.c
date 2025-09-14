@@ -17,7 +17,7 @@ void i2c_bus_init(void) {
         .scl_io_num = I2C_MASTER_SCL,
         .sda_pullup_en = GPIO_PULLUP_ENABLE,
         .scl_pullup_en = GPIO_PULLUP_ENABLE,
-        .master.clk_speed = 100000
+        .master.clk_speed = 400000
     };
     i2c_param_config(I2C_MASTER_NUM, &conf);
     i2c_driver_install(I2C_MASTER_NUM, conf.mode, 0, 0, 0);

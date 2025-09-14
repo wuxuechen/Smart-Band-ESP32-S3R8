@@ -14,7 +14,7 @@ typedef struct _objects_t {
     lv_obj_t *weather;
     lv_obj_t *activity;
     lv_obj_t *activity_rank;
-    lv_obj_t *ota;
+    lv_obj_t *coach;
     lv_obj_t *setting;
     lv_obj_t *settings_wifi_switch;
     lv_obj_t *setttings_bt_switch;
@@ -30,12 +30,14 @@ typedef struct _objects_t {
     lv_obj_t *obj1;
     lv_obj_t *activity_label;
     lv_obj_t *obj2;
+    lv_obj_t *coach_label;
+    lv_obj_t *coach_img;
+    lv_obj_t *coach_last_btn;
+    lv_obj_t *coach_next_btn;
     lv_obj_t *obj3;
-    lv_obj_t *update_btn;
     lv_obj_t *obj4;
     lv_obj_t *obj5;
     lv_obj_t *obj6;
-    lv_obj_t *obj7;
     lv_obj_t *setttings_tmp_label;
 } objects_t;
 
@@ -48,7 +50,7 @@ enum ScreensEnum {
     SCREEN_ID_WEATHER = 4,
     SCREEN_ID_ACTIVITY = 5,
     SCREEN_ID_ACTIVITY_RANK = 6,
-    SCREEN_ID_OTA = 7,
+    SCREEN_ID_COACH = 7,
     SCREEN_ID_SETTING = 8,
 };
 
@@ -70,8 +72,8 @@ void tick_screen_activity();
 void create_screen_activity_rank();
 void tick_screen_activity_rank();
 
-void create_screen_ota();
-void tick_screen_ota();
+void create_screen_coach();
+void tick_screen_coach();
 
 void create_screen_setting();
 void tick_screen_setting();
