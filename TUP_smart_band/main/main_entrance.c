@@ -36,7 +36,5 @@ void app_main(void)
 	app_touch_init();
 	    /* Show LVGL objects */
     app_main_display();
-    init_wifi();    // 1. Connect to Wi-Fi
-    //init_http_server();
-
+    
 }

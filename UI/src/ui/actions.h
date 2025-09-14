@@ -9,6 +9,8 @@ extern "C" {
 
 extern void action_btn_hello_clicked(lv_event_t * e);
 extern void action_swipe_event_cb(lv_event_t * e);
+extern void action_wifi_switch(lv_event_t * e);
+extern void action_bt_switch(lv_event_t * e);
 
 
 #ifdef __cplusplus

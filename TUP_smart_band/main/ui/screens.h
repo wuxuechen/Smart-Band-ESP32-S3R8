@@ -16,6 +16,8 @@ typedef struct _objects_t {
     lv_obj_t *activity_rank;
     lv_obj_t *ota;
     lv_obj_t *setting;
+    lv_obj_t *settings_wifi_switch;
+    lv_obj_t *setttings_bt_switch;
     lv_obj_t *home_date;
     lv_obj_t *home_time;
     lv_obj_t *home_weather;
@@ -31,6 +33,10 @@ typedef struct _objects_t {
     lv_obj_t *obj3;
     lv_obj_t *update_btn;
     lv_obj_t *obj4;
+    lv_obj_t *obj5;
+    lv_obj_t *obj6;
+    lv_obj_t *obj7;
+    lv_obj_t *setttings_tmp_label;
 } objects_t;
 
 extern objects_t objects;

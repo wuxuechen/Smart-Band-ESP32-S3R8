@@ -2,6 +2,7 @@
 #define EEZ_LVGL_UI_EVENTS_H
 
 #include <lvgl.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include "core/lv_disp.h"
 #include "core/lv_event.h"
@@ -10,12 +11,37 @@
 #include "esp_check.h"
 #include "misc/lv_area.h"
 #include "screens.h"
+#include "wifi_connect.h"
+#include "gatt_server_service_table.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 void action_btn_hello_clicked(lv_event_t *e) {
+}
+
+extern void action_bt_switch(lv_event_t * e){
+	lv_obj_t *ta = lv_event_get_target(e);
+    if (lv_obj_has_state(ta, LV_STATE_CHECKED)) {
+        ESP_LOGI("BT", "Switch ON, Enable bluetooth");
+        bt_switch(true);
+    }else{
+		ESP_LOGI("BT", "Switch OFF, Disable bluetooth");
+		bt_switch(false);
+	}
+}
+
+extern void action_wifi_switch(lv_event_t * e){
+	lv_obj_t * sw = lv_event_get_target(e);
+
+    if (lv_obj_has_state(sw, LV_STATE_CHECKED)) {
+        ESP_LOGI("LVGL", "Switch ON, Enable WiFi");
+        wifi_switch(true);
+    } else {
+        ESP_LOGI("LVGL", "Switch OFF, Disable WiFi");
+        wifi_switch(false);
+    }
 }
 
 void action_swipe_event_cb(lv_event_t * e){

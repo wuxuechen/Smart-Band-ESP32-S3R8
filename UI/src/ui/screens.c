@@ -14,6 +14,20 @@ objects_t objects;
 lv_obj_t *tick_value_change_obj;
 uint32_t active_theme_index = 0;
 
+static void event_handler_checked_cb_setting_settings_wifi_switch(lv_event_t *e) {
+    lv_obj_t *ta = lv_event_get_target(e);
+    if (lv_obj_has_state(ta, LV_STATE_CHECKED)) {
+        action_wifi_switch(e);
+    }
+}
+
+static void event_handler_checked_cb_setting_setttings_bt_switch(lv_event_t *e) {
+    lv_obj_t *ta = lv_event_get_target(e);
+    if (lv_obj_has_state(ta, LV_STATE_CHECKED)) {
+        action_bt_switch(e);
+    }
+}
+
 void create_screen_home() {
     lv_obj_t *obj = lv_obj_create(0);
     objects.home = obj;
@@ -305,6 +319,56 @@ void create_screen_setting() {
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_label_set_text(obj, "Settings");
+        }
+        {
+            // settings_wifi_switch
+            lv_obj_t *obj = lv_switch_create(parent_obj);
+            objects.settings_wifi_switch = obj;
+            lv_obj_set_pos(obj, 157, 94);
+            lv_obj_set_size(obj, 50, 25);
+            lv_obj_add_event_cb(obj, event_handler_checked_cb_setting_settings_wifi_switch, LV_EVENT_VALUE_CHANGED, (void *)0);
+        }
+        {
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.obj5 = obj;
+            lv_obj_set_pos(obj, 18, 95);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "WiFi");
+        }
+        {
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.obj6 = obj;
+            lv_obj_set_pos(obj, 18, 142);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "Bluetooth");
+        }
+        {
+            // setttings_bt_switch
+            lv_obj_t *obj = lv_switch_create(parent_obj);
+            objects.setttings_bt_switch = obj;
+            lv_obj_set_pos(obj, 157, 141);
+            lv_obj_set_size(obj, 50, 25);
+            lv_obj_add_event_cb(obj, event_handler_checked_cb_setting_setttings_bt_switch, LV_EVENT_VALUE_CHANGED, (void *)0);
+            lv_obj_add_state(obj, LV_STATE_CHECKED);
+        }
+        {
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.obj7 = obj;
+            lv_obj_set_pos(obj, 18, 45);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "CPU °C");
+        }
+        {
+            // setttings_tmp_label
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.setttings_tmp_label = obj;
+            lv_obj_set_pos(obj, 158, 45);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "0.00");
         }
     }
     

@@ -191,6 +191,9 @@ void imu_task(void *arg) {
 		    if(objects.activity_label){
 				lv_label_set_text(objects.activity_label, buf);	
 			}
+			if(objects.setttings_tmp_label){
+				lv_label_set_text_fmt(objects.setttings_tmp_label, "%.1f", data.temperature);
+			}
         } else {
             printf("IMU read error!\n");
         }
