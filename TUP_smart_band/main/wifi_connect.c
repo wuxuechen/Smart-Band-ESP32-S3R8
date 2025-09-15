@@ -82,6 +82,9 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base,
 	    } else {
 	        ESP_LOGE(TAGRTC, "Failed to set time");
 	    }
+	    init_http_server();
+	    
+	    init_weather();
     }
 }
 

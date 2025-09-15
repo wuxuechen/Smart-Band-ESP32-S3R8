@@ -296,7 +296,8 @@
                   },
                   "icon": "svg:page"
                 }
-              ]
+              ],
+              "active": true
             },
             {
               "type": "row",
@@ -316,8 +317,7 @@
                       "enableClose": false,
                       "icon": "svg:properties"
                     }
-                  ],
-                  "active": true
+                  ]
                 },
                 {
                   "type": "tabset",
@@ -1207,7 +1207,7 @@
       "transform": {
         "translate": {
           "x": -120,
-          "y": 60
+          "y": -140
         },
         "scale": 1
       },
