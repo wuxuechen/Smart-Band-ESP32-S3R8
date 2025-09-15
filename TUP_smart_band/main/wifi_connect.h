@@ -21,6 +21,5 @@
 
 void wifi_init_sta(void);
 void wifi_switch(bool enable);
-void init_wifi(void);
 
 #endif // WIFI_MANAGER_H

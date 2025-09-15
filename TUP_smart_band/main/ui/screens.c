@@ -70,7 +70,9 @@ void create_screen_home() {
             lv_label_set_text(obj, "Windy");
         }
         {
+            // home_weather_img
             lv_obj_t *obj = lv_img_create(parent_obj);
+            objects.home_weather_img = obj;
             lv_obj_set_pos(obj, 0, 36);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_img_set_src(obj, &img_weather_small);
@@ -186,10 +188,68 @@ void create_screen_weather() {
             lv_label_set_text(obj, "Weather");
         }
         {
+            // weather_current
             lv_obj_t *obj = lv_img_create(parent_obj);
-            lv_obj_set_pos(obj, 72, 24);
+            objects.weather_current = obj;
+            lv_obj_set_pos(obj, 0, 24);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-            lv_img_set_src(obj, &img_weather);
+            lv_img_set_src(obj, &img_cloud);
+        }
+        {
+            // weather_current_tmp
+            lv_obj_t *obj = lv_img_create(parent_obj);
+            objects.weather_current_tmp = obj;
+            lv_obj_set_pos(obj, 145, 24);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_img_set_src(obj, &img_temperature);
+        }
+        {
+            // weather_current_label
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.weather_current_label = obj;
+            lv_obj_set_pos(obj, 0, 79);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xfff5f5f5), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "Cloudy");
+        }
+        {
+            // weather_current_tmp_label
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.weather_current_tmp_label = obj;
+            lv_obj_set_pos(obj, 145, 79);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xfff5f5f5), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "39°C");
+        }
+        {
+            // weather_today
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.weather_today = obj;
+            lv_obj_set_pos(obj, 0, 109);
+            lv_obj_set_size(obj, 240, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_font(obj, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "Today: 39.9 °C-39.9 °C\nPatchy rain nearby");
+        }
+        {
+            // weather_tomorrow
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.weather_tomorrow = obj;
+            lv_obj_set_pos(obj, 0, 162);
+            lv_obj_set_size(obj, 240, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_font(obj, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "Tomorrow: 39.9 °C-39.9 °C\nLight rain shower");
+        }
+        {
+            // weather_after
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.weather_after = obj;
+            lv_obj_set_pos(obj, 0, 214);
+            lv_obj_set_size(obj, 240, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_font(obj, &lv_font_montserrat_16, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "After:39.9 °C-39.9 °C\nThunderstorm rain nearby");
         }
     }
     

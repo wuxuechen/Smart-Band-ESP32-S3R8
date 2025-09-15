@@ -43,6 +43,45 @@ void obtain_time(void)
     }
 }
 
+void post_wifi_task(void *pvParameters)
+{
+    // 1. Obtain SNTP / network time
+    obtain_time();
+
+    // 2. Set timezone (Singapore Time UTC+8)
+    setenv("TZ", "SGT-8", 1);
+    tzset();
+
+    // 3. Get current time
+    time_t now;
+    struct tm timeinfo;
+    time(&now);
+    localtime_r(&now, &timeinfo);
+
+    ESP_LOGI("TIME", "Current time: %04d-%02d-%02d %d %02d:%02d:%02d",
+             timeinfo.tm_year + 1900,
+             timeinfo.tm_mon + 1,
+             timeinfo.tm_mday,
+             timeinfo.tm_wday,
+             timeinfo.tm_hour,
+             timeinfo.tm_min,
+             timeinfo.tm_sec);
+
+    // 4. Set RTC
+    esp_err_t err = rtc_set_time(
+        timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec,
+        timeinfo.tm_mday, timeinfo.tm_wday,
+        timeinfo.tm_mon, timeinfo.tm_year + 1900 - 2000
+    );
+
+    if (err == ESP_OK) {
+        ESP_LOGI(TAGRTC, "Time set successfully");
+    } else {
+        ESP_LOGE(TAGRTC, "Failed to set time");
+    }
+    vTaskDelete(NULL); // Delete task when done
+}
+
 
 
 
@@ -59,32 +98,12 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base,
         xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_BIT);
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
         ESP_LOGI(TAG_WiFi, "Got IP: " IPSTR, IP2STR(&event->ip_info.ip));
-        obtain_time();
-        // Example: Singapore Time (UTC+8)
-		setenv("TZ", "SGT-8", 1); // TZ string format: <STD><OFFSET>
-		tzset();
-        time_t now;
-		struct tm timeinfo;
-		time(&now);
-		localtime_r(&now, &timeinfo);
-		
-		ESP_LOGI("TIME", "Current time: %04d-%02d-%02d %d %02d:%02d:%02d",
-		         timeinfo.tm_year + 1900,
-		         timeinfo.tm_mon + 1,
-		         timeinfo.tm_mday,
-		         timeinfo.tm_wday,
-		         timeinfo.tm_hour,
-		         timeinfo.tm_min,
-		         timeinfo.tm_sec);
-		esp_err_t  err = rtc_set_time(timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec, timeinfo.tm_mday,timeinfo.tm_wday, timeinfo.tm_mon, timeinfo.tm_year + 1900 - 2000);
-	    if (err == ESP_OK) {
-	        ESP_LOGI(TAGRTC, "Time set successfully");
-	    } else {
-	        ESP_LOGE(TAGRTC, "Failed to set time");
-	    }
-	    init_http_server();
-	    
-	    init_weather();
+        xTaskCreate(&post_wifi_task, "post_wifi_task", 8192, NULL, 5, NULL);
+    	    // start async weather per minutes
+    	init_weather();
+/*    	vTaskDelay(pdMS_TO_TICKS(5000));
+    	start_http_server();*/
+
     }
 }
 
@@ -178,7 +197,4 @@ void wifi_connect_task(void *pvParameters)
     vTaskSuspend(NULL);
 }
 
-void init_wifi(void)
-{
-    xTaskCreate(wifi_connect_task, "wifi_connect", 4096, NULL, 4, NULL);
-}
+
