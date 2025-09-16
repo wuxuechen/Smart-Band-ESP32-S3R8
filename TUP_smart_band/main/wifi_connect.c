@@ -8,6 +8,8 @@ static EventGroupHandle_t wifi_event_group;
 
 static bool sntp_inited = false;
 
+QueueHandle_t wifi_cmd_queue = NULL;
+
 void initialize_sntp(void)
 {
 	if (sntp_inited) return;   
@@ -43,7 +45,7 @@ void obtain_time(void)
     }
 }
 
-void post_wifi_task(void *pvParameters)
+void set_local_time(void *pvParameters)
 {
     // 1. Obtain SNTP / network time
     obtain_time();
@@ -82,7 +84,18 @@ void post_wifi_task(void *pvParameters)
     vTaskDelete(NULL); // Delete task when done
 }
 
-
+void wifi_task(void *arg) {
+    wifi_cmd_t cmd;
+    while (1) {
+        if (xQueueReceive(wifi_cmd_queue, &cmd, portMAX_DELAY)) {
+            if (cmd == WIFI_CMD_ENABLE) {
+                wifi_switch(true);
+            } else {
+                wifi_switch(false);
+            }
+        }
+    }
+}
 
 
 static void wifi_event_handler(void* arg, esp_event_base_t event_base,
@@ -98,9 +111,14 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base,
         xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_BIT);
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
         ESP_LOGI(TAG_WiFi, "Got IP: " IPSTR, IP2STR(&event->ip_info.ip));
-        xTaskCreate(&post_wifi_task, "post_wifi_task", 8192, NULL, 5, NULL);
+        // Start post-WiFi tasks here (only once)
+        static bool post_tasks_started = false;
+        if (!post_tasks_started) {
+            post_tasks_started = true;
+            xTaskCreate(set_local_time, "set_local_time", 4096, NULL, 5, NULL);
+            init_weather(); // creates weather_task
+        }
     	    // start async weather per minutes
-    	init_weather();
 /*    	vTaskDelay(pdMS_TO_TICKS(5000));
     	start_http_server();*/
 

@@ -55,7 +55,7 @@ typedef struct {
 typedef enum { QMI_RESULT_OK = 0, QMI_RESULT_ERROR } qmi_result_t;
 
 // Sensitivity tables
-static const uint16_t acc_sens_table[4]  = {16384, 8192, 4096, 2048};
+static const uint16_t acc_sens_table[4]  = {16384, 4096, 4096, 2048};
 static const uint16_t gyro_sens_table[8] = {2048, 1024, 512, 256, 128, 64, 32, 16};
 
 // I2C helpers
@@ -202,5 +202,5 @@ void imu_task(void *arg) {
 }
 
 void init_qmi8658(void){
-    xTaskCreate(imu_task, "imu_task", 8192, NULL, 5, NULL);
+    xTaskCreate(imu_task, "imu_task", 4096, NULL, 5, NULL);
 }

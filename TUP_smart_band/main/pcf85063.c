@@ -156,6 +156,6 @@ void init_rtc(void)
     }
 
     // Start RTC task
-    xTaskCreate(rtc_task, "rtc_task", 8192, NULL, 5, NULL);
+    xTaskCreate(rtc_task, "rtc_task", 4096, NULL, 5, NULL);
 }
 

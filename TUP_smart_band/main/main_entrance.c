@@ -10,6 +10,7 @@
 #define I2C_MASTER_SCL 10
 #define I2C_MASTER_SDA 11
 
+
 void i2c_bus_init(void) {
     i2c_config_t conf = {
         .mode = I2C_MODE_MASTER,
@@ -29,6 +30,10 @@ void app_main(void)
 	init_rtc();
 	init_qmi8658();
     init_bluetooth();
+    
+    wifi_cmd_queue = xQueueCreate(4, sizeof(wifi_cmd_t));
+    xTaskCreate(wifi_task, "wifi_task", 4096, NULL, 5, NULL);
+    
     ESP_ERROR_CHECK(app_lcd_init());
 
     /* LVGL initialization */

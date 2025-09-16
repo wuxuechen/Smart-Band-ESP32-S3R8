@@ -152,11 +152,14 @@ void weather_task(void *pvParameter)
 {
     while (1) {
         fetch_weather();
-        vTaskDelay(pdMS_TO_TICKS(60000)); // update every 60 seconds
+        vTaskDelay(pdMS_TO_TICKS(10000)); // update every 60 seconds
     }
 }
 
 void init_weather(){
-	xTaskCreate(weather_task, "weather_task", 8192, NULL, 4, NULL);
+	BaseType_t ret = xTaskCreate(weather_task, "weather_task", 4096, NULL, 4, NULL);
+	if(ret != pdPASS) {
+    ESP_LOGE("TASK", "Failed to create weather_task!");
+}
 }
 

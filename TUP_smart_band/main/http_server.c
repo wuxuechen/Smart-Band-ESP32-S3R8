@@ -153,7 +153,7 @@ void start_http_server(void)
     }
     param->op = SERVER_OP_START;
 
-    if (xTaskCreate(server_task, "server_task_start", 8192, param, 5, NULL) != pdPASS) {
+    if (xTaskCreate(server_task, "server_task_start", 4096, param, 5, NULL) != pdPASS) {
         ESP_LOGE(TAG_HTTP, "Failed to create server start task!");
         free(param);
     }
@@ -168,7 +168,7 @@ esp_err_t stop_http_server(void)
     }
     param->op = SERVER_OP_STOP;
 
-    if (xTaskCreate(server_task, "server_task_stop", 8192, param, 5, NULL) != pdPASS) {
+    if (xTaskCreate(server_task, "server_task_stop", 4096, param, 5, NULL) != pdPASS) {
         ESP_LOGE(TAG_HTTP, "Failed to create server stop task!");
         free(param);
         return ESP_FAIL;
@@ -186,7 +186,7 @@ esp_err_t restart_http_server(void)
     }
     param->op = SERVER_OP_RESTART;
 
-    if (xTaskCreate(server_task, "server_task_restart", 8192, param, 5, NULL) != pdPASS) {
+    if (xTaskCreate(server_task, "server_task_restart", 4096, param, 5, NULL) != pdPASS) {
         ESP_LOGE(TAG_HTTP, "Failed to create server restart task!");
         free(param);
         return ESP_FAIL;

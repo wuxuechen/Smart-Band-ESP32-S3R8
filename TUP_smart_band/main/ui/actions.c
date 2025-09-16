@@ -15,6 +15,7 @@
 #include "wifi_connect.h"
 #include "gatt_server_service_table.h"
 #include "ui/images.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -78,16 +79,17 @@ extern void action_bt_switch(lv_event_t * e){
 	}
 }
 
-extern void action_wifi_switch(lv_event_t * e){
-	lv_obj_t * sw = lv_event_get_target(e);
 
-    if (lv_obj_has_state(sw, LV_STATE_CHECKED)) {
-        ESP_LOGI("LVGL", "Switch ON, Enable WiFi");
-        wifi_switch(true);
-    } else {
-        ESP_LOGI("LVGL", "Switch OFF, Disable WiFi");
-        wifi_switch(false);
-    }
+extern void action_wifi_switch(lv_event_t * e) {
+    lv_obj_t * sw = lv_event_get_target(e);
+
+    wifi_cmd_t cmd = lv_obj_has_state(sw, LV_STATE_CHECKED) ?
+                        WIFI_CMD_ENABLE : WIFI_CMD_DISABLE;
+
+    // just post message, return immediately
+    xQueueSend(wifi_cmd_queue, &cmd, 0);
+
+    ESP_LOGI("LVGL", "Switch toggled, queued WiFi action");
 }
 
 void action_swipe_event_cb(lv_event_t * e){
