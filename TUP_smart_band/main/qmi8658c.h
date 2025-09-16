@@ -2,6 +2,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/i2c.h"
+#include "lcd_touch.h"
 
 #define I2C_SCL_PIN 10
 #define I2C_SDA_PIN 11
@@ -83,40 +84,45 @@ typedef struct {
     float z;
 } imu_data_t;
 
+typedef struct { float x, y, z; } vector3f_t;
 typedef struct {
-    imu_data_t acc_xyz;
-    imu_data_t gyro_xyz;
+    vector3f_t acc_xyz;
+    vector3f_t gyro_xyz;
     float temperature;
 } qmi_data_t;
 
 typedef struct {
     uint8_t device_addr;
     uint32_t i2c_freq;
-
     uint8_t acc_scale;
     uint16_t acc_sensitivity;
     uint8_t gyro_scale;
     uint16_t gyro_sensitivity;
 } qmi_ctx_t;
 
-typedef enum {
-    QMI_RESULT_OK,
-    QMI_RESULT_ERROR
-} qmi_result_t;
 
-// Initialization and I2C
 void qmi_init(qmi_ctx_t *ctx, uint8_t device_addr, uint32_t i2c_freq);
+
+// Reset sensor
 qmi_result_t qmi_reset(qmi_ctx_t *ctx);
-qmi_result_t qmi_set_mode(qmi_ctx_t *ctx, qmi8658_mode_t mode);
+
+// Set accelerometer scale
+qmi_result_t qmi_acc_set_scale(qmi_ctx_t *ctx, uint8_t scale);
+
+// Set gyroscope ODR (simple example)
+qmi_result_t qmi_gyro_set_odr(qmi_ctx_t *ctx, uint8_t odr);
+
+// Set mode
+qmi_result_t qmi_set_mode(qmi_ctx_t *ctx, uint8_t mode);
+
+// Read accelerometer, gyro, temperature
 qmi_result_t qmi_read(qmi_ctx_t *ctx, qmi_data_t *data);
+ 
+void gait_add_step(gait_metrics_t *g);
 
-// Accelerometer / Gyroscope config
-qmi_result_t qmi_acc_set_scale(qmi_ctx_t *ctx, acc_scale_t scale);
-qmi_result_t qmi_acc_set_odr(qmi_ctx_t *ctx, acc_odr_t odr);
-qmi_result_t qmi_gyro_set_scale(qmi_ctx_t *ctx, gyro_scale_t scale);
-qmi_result_t qmi_gyro_set_odr(qmi_ctx_t *ctx, gyro_odr_t odr);
+void handle_acc_gyr(const qmi_data_t *data, gait_metrics_t *gait_out);
 
+// FreeRTOS task
 void imu_task(void *arg);
-
 
 void init_qmi8658(void);

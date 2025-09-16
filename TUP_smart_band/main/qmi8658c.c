@@ -1,11 +1,14 @@
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/i2c.h"
 #include "esp_log.h"
 #include "ui/screens.h"
 #include "widgets/lv_label.h"
+#include "qmi8658c.h"
 
 // I2C configuration
 #define I2C_MASTER_SCL 10
@@ -35,27 +38,8 @@
 #define QMI8658_REG_TEMPEARTURE_L 0x33
 #define QMI8658_REG_TEMPEARTURE_H 0x34
 
-typedef struct { float x, y, z; } vector3f_t;
-
-typedef struct {
-    uint8_t device_addr;
-    uint32_t i2c_freq;
-    uint8_t acc_scale;
-    uint16_t acc_sensitivity;
-    uint8_t gyro_scale;
-    uint16_t gyro_sensitivity;
-} qmi_ctx_t;
-
-typedef struct {
-    vector3f_t acc_xyz;
-    vector3f_t gyro_xyz;
-    float temperature;
-} qmi_data_t;
-
-typedef enum { QMI_RESULT_OK = 0, QMI_RESULT_ERROR } qmi_result_t;
-
 // Sensitivity tables
-static const uint16_t acc_sens_table[4]  = {16384, 4096, 4096, 2048};
+static const uint16_t acc_sens_table[4]  = {16384, 8192, 4096, 2048};
 static const uint16_t gyro_sens_table[8] = {2048, 1024, 512, 256, 128, 64, 32, 16};
 
 // I2C helpers
@@ -159,8 +143,92 @@ qmi_result_t qmi_read(qmi_ctx_t *ctx, qmi_data_t *data) {
 
     return QMI_RESULT_OK;
 }
+ 
+void gait_add_step(gait_metrics_t *g) {
+    // Get current time
+    time_t t = time(NULL);
+    struct tm tm_now;
+    localtime_r(&t, &tm_now);
+ 
+    // Reset steps at midnight
+    if (tm_now.tm_hour == 0 && tm_now.tm_min == 0) {
+        g->steps = 0;
+    } else {
+        g->steps++;
+    }
+}
+ 
+void handle_acc_gyr(const qmi_data_t *data, gait_metrics_t *gait_out) {
+    const float step_threshold = 1.5f;      // m/s², tune this for real walking
+    const uint32_t min_step_interval = 300; // ms, minimum time between steps
 
-static char buf[128];
+    static uint32_t last_step_time = 0;
+    static bool step_ready = true;
+    static float acc_peak = 0.0f;
+
+    // --- Convert accelerometer from g to m/s² ---
+    float ax = data->acc_xyz.x * 9.81f;
+    float ay = data->acc_xyz.y * 9.81f;
+    float az = data->acc_xyz.z * 9.81f;
+
+    // --- Compute acceleration magnitude ---
+    float acc_sq = ax*ax + ay*ay + az*az;
+    float acc_mag = pow(acc_sq, 0.5);       // manual sqrt
+    float acc_dynamic = acc_mag - 9.81f;    // remove gravity
+
+    // --- Track peak acceleration ---
+    if (acc_dynamic > acc_peak) {
+        acc_peak = acc_dynamic;
+    }
+
+    // --- Step detection at peak ---
+    uint32_t now = xTaskGetTickCount() * portTICK_PERIOD_MS;
+    if (acc_peak > step_threshold && step_ready) {
+        if (last_step_time == 0 || (now - last_step_time) > min_step_interval) {
+            // calculate dt BEFORE updating last_step_time
+            float dt = (last_step_time == 0) ? 0.5f : (now - last_step_time) / 1000.0f; // fallback 0.5s
+            last_step_time = now;
+
+            gait_add_step(gait_out);
+
+            // Update cadence, stride length, pace
+            if (dt > 0.01f) {
+                gait_out->cadence = 60.0f / dt;  // steps/min
+                float acc_abs = acc_peak > 0 ? acc_peak : -acc_peak;
+                gait_out->stride_length = 0.25f * pow(acc_abs, 0.5f); // meters
+                float speed = gait_out->stride_length / dt;            // m/s
+                if (speed > 0.01f)
+                    gait_out->pace = (1000.0f / speed) / 60.0f;      // min/km
+            }
+        }
+        step_ready = false;
+        acc_peak = 0.0f; // reset peak after counting step
+    }
+
+    // --- Reset step_ready when acceleration is low ---
+    if (acc_dynamic < 0.3f) { // slightly higher than noise
+        step_ready = true;
+        acc_peak = 0.0f;
+    }
+
+    // --- Ground contact (placeholder) ---
+    float gz = data->gyro_xyz.z; // assume already in °/s
+    if (gz > -5.0f && gz < 5.0f) {
+        gait_out->ground_contact = 200; // ms
+    }
+
+
+    // --- Debug print ---
+/*    printf("Gait metrics:\n");
+    printf("  Stride length: %.2f m\n", gait_out->stride_length);
+    printf("  Cadence: %.2f steps/min\n", gait_out->cadence);
+    printf("  Pace: %.2f min/km\n", gait_out->pace);
+    printf("  Ground contact: %.1f ms\n", gait_out->ground_contact);
+    printf("  Steps: %d\n", gait_out->steps);*/
+}
+
+
+
 // FreeRTOS task
 void imu_task(void *arg) {
     qmi_ctx_t imu;
@@ -173,13 +241,13 @@ void imu_task(void *arg) {
     qmi_set_mode(&imu, 0x03); // normal mode
     qmi_acc_set_scale(&imu, 1); // 4G
     qmi_gyro_set_odr(&imu, 0x03); // example ODR
-
+	gait_metrics_t gait_local = {0};
     while(1) {
         if(qmi_read(&imu, &data) == QMI_RESULT_OK) {
             //printf("Acc: %.2f %.2f %.2f\n", data.acc_xyz.x, data.acc_xyz.y, data.acc_xyz.z);
             //printf("Gyro: %.2f %.2f %.2f\n", data.gyro_xyz.x, data.gyro_xyz.y, data.gyro_xyz.z);
             //printf("Temp: %.2f\n", data.temperature);
-            snprintf(buf, sizeof(buf),
+            snprintf(gait_local.info, sizeof(gait_local.info),
 		        "   acc    gyr\n"
 			    "x %+.2f %+.2f\n"
 			    "y %+.2f %+.2f\n"
@@ -188,19 +256,21 @@ void imu_task(void *arg) {
 		        data.acc_xyz.y, data.gyro_xyz.y,
 		        data.acc_xyz.z, data.gyro_xyz.z
 		    );
-		    if(objects.activity_label){
-				lv_label_set_text(objects.activity_label, buf);	
-			}
-			if(objects.setttings_tmp_label){
-				lv_label_set_text_fmt(objects.setttings_tmp_label, "%.1f", data.temperature);
-			}
+		    handle_acc_gyr(&data, &gait_local);
+	        gait_local.temperature = data.temperature;
+
+	        // Send gait data to GUI task (non-blocking)
+	        xQueueSend(gait_queue, &gait_local, 0);
+	        
         } else {
             printf("IMU read error!\n");
         }
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
 void init_qmi8658(void){
+	gait_queue = xQueueCreate(5, sizeof(gait_metrics_t));
     xTaskCreate(imu_task, "imu_task", 4096, NULL, 5, NULL);
+    xTaskCreate(gui_task, "gui_task", 4096, NULL, 5, NULL);
 }

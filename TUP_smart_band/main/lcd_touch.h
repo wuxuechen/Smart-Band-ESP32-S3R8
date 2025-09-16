@@ -25,6 +25,19 @@
 #define LCD_H_RES (240)
 #define LCD_V_RES (280)
 
+typedef enum { QMI_RESULT_OK = 0, QMI_RESULT_ERROR } qmi_result_t;
+typedef struct {
+    float stride_length;   // meters
+    float cadence;         // steps/min
+    float pace;            // min/km
+    float ground_contact;  // ms
+    int steps;
+    float temperature;
+    char info[128];
+} gait_metrics_t;
+
+extern QueueHandle_t gait_queue;
+
 esp_err_t app_lvgl_init(void);
 
 esp_err_t app_lcd_init(void);
@@ -32,5 +45,7 @@ esp_err_t app_lcd_init(void);
 void app_touch_init();
 
 void app_main_display(void);
+
+void gui_task(void *arg);
 
 #endif //LCD_TP_MANAGER_H

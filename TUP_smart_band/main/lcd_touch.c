@@ -235,6 +235,33 @@ void app_touch_init(){
 #endif
 }
 
+QueueHandle_t gait_queue = NULL;
+
+void gui_task(void *arg) {
+    gait_metrics_t gait_received;
+
+    while(1) {
+        if(xQueueReceive(gait_queue, &gait_received, pdMS_TO_TICKS(100))) {
+            if(objects.activity_stride)
+                lv_label_set_text_fmt(objects.activity_stride, "%.2f", gait_received.stride_length);
+            if(objects.activity_cadence)
+                lv_label_set_text_fmt(objects.activity_cadence, "%.2f", gait_received.cadence);
+            if(objects.activity_pace)
+                lv_label_set_text_fmt(objects.activity_pace, "%.2f", gait_received.pace);
+            if(objects.activity_steps)
+                lv_label_set_text_fmt(objects.activity_steps, "%d", gait_received.steps);
+            if(objects.activity_label){
+				lv_label_set_text(objects.activity_label, gait_received.info);	
+			}
+			if(objects.setttings_tmp_label){
+				lv_label_set_text_fmt(objects.setttings_tmp_label, "%.1f", gait_received.temperature);
+			}
+        }
+        vTaskDelay(pdMS_TO_TICKS(50)); // update LVGL 20Hz max
+    }
+}
+
+
 
 void app_main_display(void)
 {
