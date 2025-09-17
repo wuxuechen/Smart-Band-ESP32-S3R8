@@ -573,9 +573,11 @@ void create_screen_setting() {
             lv_obj_t *obj = lv_btn_create(parent_obj);
             objects.settings_update = obj;
             lv_obj_set_pos(obj, 97, 230);
-            lv_obj_set_size(obj, 47, 50);
+            lv_obj_set_size(obj, 48, 48);
+            lv_obj_add_event_cb(obj, action_update_btn_pressed, LV_EVENT_PRESSED, (void *)0);
             lv_obj_set_style_bg_img_src(obj, &img_update, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_bg_color(obj, lv_color_hex(0xff0f0552), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_shadow_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
         }
         {
             // setttings_username
@@ -585,6 +587,30 @@ void create_screen_setting() {
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_obj_set_style_text_color(obj, lv_color_hex(0xfffcff00), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_label_set_text(obj, "Joseph");
+        }
+        {
+            // setttings_update_animation
+            lv_obj_t *obj = lv_animimg_create(parent_obj);
+            objects.setttings_update_animation = obj;
+            lv_obj_set_pos(obj, 97, 230);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            static const lv_img_dsc_t *images[10] = {
+                &img_u1,
+                &img_u2,
+                &img_u3,
+                &img_u4,
+                &img_u5,
+                &img_u6,
+                &img_u7,
+                &img_u8,
+                &img_u9,
+                &img_u10,
+            };
+            lv_animimg_set_src(obj, (const void **)images, 10);
+            lv_animimg_set_duration(obj, 600);
+            lv_animimg_set_repeat_count(obj, LV_ANIM_REPEAT_INFINITE);
+            lv_animimg_start(obj);
+            lv_obj_add_flag(obj, LV_OBJ_FLAG_HIDDEN);
         }
     }
     

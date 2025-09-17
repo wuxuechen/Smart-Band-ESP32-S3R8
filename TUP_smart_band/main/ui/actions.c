@@ -37,6 +37,25 @@ const ext_img_desc_t sports_images[10] = {
 void action_btn_hello_clicked(lv_event_t *e) {
 }
 
+static lv_timer_t * anim_timer = NULL;
+
+void animation_cb(lv_timer_t * timer){
+    lv_obj_clear_flag(objects.settings_update, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(objects.setttings_update_animation, LV_OBJ_FLAG_HIDDEN);
+
+    // stop the timer after one execution
+    lv_timer_del(timer);
+    anim_timer = NULL;
+}
+
+extern void action_update_btn_pressed(lv_event_t * e){
+	lv_obj_add_flag(objects.settings_update, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(objects.setttings_update_animation, LV_OBJ_FLAG_HIDDEN);
+     if(anim_timer == NULL) {
+        anim_timer = lv_timer_create(animation_cb, 2000, NULL);
+    }
+}
+
 void set_coach(int i){
 	if(i==0){
 		lv_obj_add_state(objects.coach_last_btn, LV_STATE_DISABLED);   // Disable
@@ -203,7 +222,7 @@ void action_swipe_event_cb(lv_event_t * e){
     	}
     	if(dir == LV_DIR_RIGHT) {
         // Load Calendar screen with animation
-        lv_scr_load_anim(objects.activity_rank, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 300, 0, false);
+        lv_scr_load_anim(objects.weather, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 300, 0, false);
     	}
     	if(dir == LV_DIR_TOP) {
         // Load Calendar screen with animation

@@ -38,7 +38,7 @@
 esp_lcd_touch_handle_t tp = NULL;
 #endif
 
-static const char *TAG = "TUP";
+static const char *TAG = "LCD_TP";
 
 /* LCD IO and panel */
 static esp_lcd_panel_io_handle_t lcd_io = NULL;
@@ -235,39 +235,85 @@ void app_touch_init(){
 #endif
 }
 
-QueueHandle_t gait_queue = NULL;
+const char *weekdays[7] = {
+	"Su",
+    "Mo", 
+    "Tu", 
+    "We", 
+    "Th", 
+    "Fr", 
+    "Sa"
+};
 
-void gui_task(void *arg) {
-    gait_metrics_t gait_received;
+const char *months[] = {
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec"
+};
 
+
+QueueHandle_t lvgl_update_queue = NULL;
+
+void lvgl_update_task(void *arg) {
+    lvgl_msg_t msg;
     while(1) {
-        if(xQueueReceive(gait_queue, &gait_received, pdMS_TO_TICKS(100))) {
-            if(objects.activity_stride)
-                lv_label_set_text_fmt(objects.activity_stride, "%.2f", gait_received.stride_length);
-            if(objects.activity_cadence)
-                lv_label_set_text_fmt(objects.activity_cadence, "%.2f", gait_received.cadence);
-            if(objects.activity_pace)
-                lv_label_set_text_fmt(objects.activity_pace, "%.2f", gait_received.pace);
-            if(objects.activity_steps)
-                lv_label_set_text_fmt(objects.activity_steps, "%d", gait_received.steps);
-            if(objects.activity_label){
-				lv_label_set_text(objects.activity_label, gait_received.info);	
+        if(xQueueReceive(lvgl_update_queue, &msg, pdMS_TO_TICKS(100))) {
+			lvgl_port_lock(-1); 
+			if (msg.type == MSG_TYPE_GAIT){
+				gait_metrics_t *g = &msg.gait;
+				if(objects.activity_stride)
+                lv_label_set_text_fmt(objects.activity_stride, "%.2f", g->stride_length);
+	            if(objects.activity_cadence)
+	                lv_label_set_text_fmt(objects.activity_cadence, "%.2f", g->cadence);
+	            if(objects.activity_pace)
+	                lv_label_set_text_fmt(objects.activity_pace, "%.2f", g->pace);
+	            if(objects.activity_steps)
+	                lv_label_set_text_fmt(objects.activity_steps, "%d", g->steps);
+	            if(objects.activity_label){
+					lv_label_set_text(objects.activity_label, g->info);	
+				}
+				if(objects.setttings_tmp_label){
+					lv_label_set_text_fmt(objects.setttings_tmp_label, "%.1f", g->temperature);
+				}
 			}
-			if(objects.setttings_tmp_label){
-				lv_label_set_text_fmt(objects.setttings_tmp_label, "%.1f", gait_received.temperature);
+			if (msg.type == MSG_TYPE_RTC) {
+				rtc_time_t *t = &msg.rtc;
+				if(objects.home_time){
+					lv_label_set_text_fmt(objects.home_time, "%02d:%02d:%02d", t->hours, t->minutes, t->seconds);
+				}
+				if(objects.home_date){
+					lv_label_set_text_fmt(objects.home_date, "%s %02d %s", months[t->month], t->day,  weekdays[t->weekday]);
+					lv_calendar_set_showed_date(objects.calendar_calendar, t->year, t->month+1);
+					lv_calendar_set_today_date(objects.calendar_calendar, t->year, t->month+1, t->day);
+				}
+				
 			}
+
+			lvgl_port_unlock();  // unlock after LVGL update
         }
-        vTaskDelay(pdMS_TO_TICKS(50)); // update LVGL 20Hz max
+        vTaskDelay(pdMS_TO_TICKS(50)); // LVGL task tick
     }
 }
-
-
 
 void app_main_display(void)
 {
     /* Task lock */
     lvgl_port_lock(-1);
     ui_init();
+    lvgl_update_queue = xQueueCreate(10, sizeof(lvgl_msg_t));
+    if (!lvgl_update_queue) {
+	    ESP_LOGE(TAG, "Failed to create LVGL update queue");
+	}
+    xTaskCreate(lvgl_update_task, "LVGL_Update", 4096, NULL, 5, NULL);
     /* Task unlock */
     lvgl_port_unlock();
 }

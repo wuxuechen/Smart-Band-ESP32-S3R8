@@ -1,30 +1,5 @@
 #include "pcf85063.h"
-
-
-const char *weekdays[7] = {
-	"Su",
-    "Mo", 
-    "Tu", 
-    "We", 
-    "Th", 
-    "Fr", 
-    "Sa"
-};
-
-const char *months[] = {
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-};
+#include "lcd_touch.h"
 
 /*// Helper function to initiate I2C
 esp_err_t i2c_master_init(void) {
@@ -81,31 +56,36 @@ uint8_t bcd_to_dec(uint8_t val) {
 uint8_t dec_to_bcd(uint8_t val) {
     return ((val / 10) << 4) | (val % 10);
 }
-
 // Function to get current time from the RTC
-esp_err_t rtc_get_time(void) {
+esp_err_t rtc_get_time() {
     uint8_t data[7];
     esp_err_t ret = rtc_read_reg(0x04, data, 7); // PCF85063 time registers start from 0x04
     if (ret != ESP_OK) {
         ESP_LOGE(TAGRTC, "Failed to read time registers");
         return ret;
     }
-
-    uint8_t seconds = bcd_to_dec(data[0] & 0x7F); // Masking out the stop bit
-    uint8_t minutes = bcd_to_dec(data[1]);
-    uint8_t hours = bcd_to_dec(data[2]);
-    uint8_t day = bcd_to_dec(data[3]);
-    uint8_t weekday = bcd_to_dec(data[4]);
-    uint8_t month = bcd_to_dec(data[5] & 0x1F); // Masking out the century bit
-    uint8_t year = bcd_to_dec(data[6]);
-	if(objects.home_time){
+    rtc_time_t time;
+    time.seconds = bcd_to_dec(data[0] & 0x7F); // Masking out the stop bit
+    time.minutes = bcd_to_dec(data[1]);
+    time.hours = bcd_to_dec(data[2]);
+    time.day = bcd_to_dec(data[3]);
+    time.weekday = bcd_to_dec(data[4]);
+    time.month = bcd_to_dec(data[5] & 0x1F); // Masking out the century bit
+    time.year = bcd_to_dec(data[6]);
+    lvgl_msg_t msg = {};
+    msg.type = MSG_TYPE_RTC;
+    msg.rtc = time;
+    if(lvgl_update_queue){
+		xQueueSend(lvgl_update_queue, &msg, 0);
+	}
+/*	if(objects.home_time){
 		lv_label_set_text_fmt(objects.home_time, "%02d:%02d:%02d", hours, minutes, seconds);
 	}
 	if(objects.home_date){
 		lv_label_set_text_fmt(objects.home_date, "%s %02d %s", months[month], day,  weekdays[weekday]);
 		lv_calendar_set_showed_date(objects.calendar_calendar, year, month+1);
 		lv_calendar_set_today_date(objects.calendar_calendar, year, month+1, day);
-	}
+	}*/
     //ESP_LOGI(TAGRTC, "Current Time: %02d:%02d:%02d %02d/%02d/%04d %d", hours, minutes, seconds, day, month, 2000 + year, weekday);
     return ESP_OK;
 }
@@ -154,7 +134,6 @@ void init_rtc(void)
     } else {
         ESP_LOGE(TAGRTC, "Failed to set time");
     }
-
     // Start RTC task
     xTaskCreate(rtc_task, "rtc_task", 4096, NULL, 5, NULL);
 }

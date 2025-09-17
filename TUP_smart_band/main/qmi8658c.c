@@ -6,6 +6,7 @@
 #include "freertos/task.h"
 #include "driver/i2c.h"
 #include "esp_log.h"
+#include "lcd_touch.h"
 #include "ui/screens.h"
 #include "widgets/lv_label.h"
 #include "qmi8658c.h"
@@ -241,13 +242,13 @@ void imu_task(void *arg) {
     qmi_set_mode(&imu, 0x03); // normal mode
     qmi_acc_set_scale(&imu, 1); // 4G
     qmi_gyro_set_odr(&imu, 0x03); // example ODR
-	gait_metrics_t gait_local = {0};
+	lvgl_msg_t msg = {0};
     while(1) {
         if(qmi_read(&imu, &data) == QMI_RESULT_OK) {
             //printf("Acc: %.2f %.2f %.2f\n", data.acc_xyz.x, data.acc_xyz.y, data.acc_xyz.z);
             //printf("Gyro: %.2f %.2f %.2f\n", data.gyro_xyz.x, data.gyro_xyz.y, data.gyro_xyz.z);
             //printf("Temp: %.2f\n", data.temperature);
-            snprintf(gait_local.info, sizeof(gait_local.info),
+            snprintf(msg.gait.info, sizeof(msg.gait.info),
 		        "   acc    gyr\n"
 			    "x %+.2f %+.2f\n"
 			    "y %+.2f %+.2f\n"
@@ -256,21 +257,20 @@ void imu_task(void *arg) {
 		        data.acc_xyz.y, data.gyro_xyz.y,
 		        data.acc_xyz.z, data.gyro_xyz.z
 		    );
-		    handle_acc_gyr(&data, &gait_local);
-	        gait_local.temperature = data.temperature;
-
+		    handle_acc_gyr(&data, &msg.gait);
+			msg.gait.temperature = data.temperature;
 	        // Send gait data to GUI task (non-blocking)
-	        xQueueSend(gait_queue, &gait_local, 0);
+	        if(lvgl_update_queue){
+	        	xQueueSend(lvgl_update_queue, &msg, 0);
+	        }
 	        
         } else {
             printf("IMU read error!\n");
         }
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(200));
     }
 }
 
 void init_qmi8658(void){
-	gait_queue = xQueueCreate(5, sizeof(gait_metrics_t));
     xTaskCreate(imu_task, "imu_task", 4096, NULL, 5, NULL);
-    xTaskCreate(gui_task, "gui_task", 4096, NULL, 5, NULL);
 }

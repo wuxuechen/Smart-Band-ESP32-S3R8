@@ -1,6 +1,7 @@
 #include "http_request.h"
 #include "cJSON.h"
 #include "esp_crt_bundle.h" 
+#include "esp_wifi.h"
 #include "widgets/lv_label.h"
 #include "ui/screens.h"
 #include "ui/images.h"
@@ -130,9 +131,20 @@ esp_err_t http_event_handler(esp_http_client_event_t *evt) {
 
 void fetch_weather()
 {
+	wifi_ap_record_t ap_info;  // declare a struct
+    esp_err_t ret = esp_wifi_sta_get_ap_info(&ap_info);  // pass its address
+
+    if (ret == ESP_OK) {
+        ESP_LOGI("WIFI", " was connected to SSID: %s, RSSI: %d, http request is available", ap_info.ssid, ap_info.rssi);
+    } else {
+        ESP_LOGW("WIFI", "Not connected to any AP, http is not available");
+        return;
+    }
+	
     esp_http_client_config_t config = {
 	    .url = "http://192.168.0.122:5000/weather",
 	    .event_handler = http_event_handler,
+	    .timeout_ms = 8000
     };
 	ESP_LOGI("HTTP", "url:%s\n", config.url);
     esp_http_client_handle_t client = esp_http_client_init(&config);

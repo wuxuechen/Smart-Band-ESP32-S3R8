@@ -36,7 +36,28 @@ typedef struct {
     char info[128];
 } gait_metrics_t;
 
-extern QueueHandle_t gait_queue;
+typedef struct {
+    uint8_t seconds;
+    uint8_t minutes;
+    uint8_t hours;
+    uint8_t day;
+    uint8_t weekday;
+    uint8_t month;
+    uint8_t year;
+} rtc_time_t;
+
+typedef enum { MSG_TYPE_GAIT = 0, MSG_TYPE_RTC } lvgl_mgs_type_t;
+
+typedef struct{
+	lvgl_mgs_type_t type;
+	union {
+        gait_metrics_t gait;
+        rtc_time_t rtc;
+    };
+} lvgl_msg_t;
+
+
+extern QueueHandle_t lvgl_update_queue;
 
 esp_err_t app_lvgl_init(void);
 
@@ -46,6 +67,6 @@ void app_touch_init();
 
 void app_main_display(void);
 
-void gui_task(void *arg);
+void lvgl_update_task(void *arg);
 
 #endif //LCD_TP_MANAGER_H

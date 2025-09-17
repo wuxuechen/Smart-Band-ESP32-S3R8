@@ -112,12 +112,10 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base,
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
         ESP_LOGI(TAG_WiFi, "Got IP: " IPSTR, IP2STR(&event->ip_info.ip));
         // Start post-WiFi tasks here (only once)
-        static bool post_tasks_started = false;
-        if (!post_tasks_started) {
-            post_tasks_started = true;
-            xTaskCreate(set_local_time, "set_local_time", 4096, NULL, 5, NULL);
-            init_weather(); // creates weather_task
-        }
+
+        xTaskCreate(set_local_time, "set_local_time", 4096, NULL, 5, NULL);
+        init_weather(); // creates weather_task
+
     	    // start async weather per minutes
 /*    	vTaskDelay(pdMS_TO_TICKS(5000));
     	start_http_server();*/

@@ -6,6 +6,7 @@
 #include "esp_err.h"
 #include "extra/widgets/calendar/lv_calendar.h"
 #include "ui/screens.h"
+#include "lcd_touch.h"
 
 // I2C configuration
 #define I2C_MASTER_SCL_IO    10        // Set the SCL pin
@@ -39,7 +40,7 @@ uint8_t bcd_to_dec(uint8_t val);
 uint8_t dec_to_bcd(uint8_t val);
 
 // Function to get current time from the RTC
-esp_err_t rtc_get_time(void);
+esp_err_t rtc_get_time();
 
 // Function to set time on the RTC
 esp_err_t rtc_set_time(uint8_t hours, uint8_t minutes, uint8_t seconds, uint8_t day,uint8_t weekday, uint8_t month, uint8_t year);

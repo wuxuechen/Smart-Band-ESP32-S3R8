@@ -1,6 +1,6 @@
 #include "images.h"
 
-const ext_img_desc_t images[20] = {
+const ext_img_desc_t images[30] = {
     { "bg", &img_bg },
     { "run", &img_run },
     { "update", &img_update },
@@ -21,4 +21,14 @@ const ext_img_desc_t images[20] = {
     { "temperature", &img_temperature },
     { "arrow_l", &img_arrow_l },
     { "arrow_r", &img_arrow_r },
+    { "u1", &img_u1 },
+    { "u2", &img_u2 },
+    { "u3", &img_u3 },
+    { "u4", &img_u4 },
+    { "u5", &img_u5 },
+    { "u6", &img_u6 },
+    { "u7", &img_u7 },
+    { "u8", &img_u8 },
+    { "u9", &img_u9 },
+    { "u10", &img_u10 },
 };

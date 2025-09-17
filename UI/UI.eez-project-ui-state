@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[UI.eez-project]:/userPages/6",
+    "selectedUserPageObject": "[UI.eez-project]:/userPages/7",
     "selectedBitmapObject": "[UI.eez-project]:/bitmaps/14",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
@@ -192,7 +192,7 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 50.41255289139633,
-              "selected": 2,
+              "selected": 1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [

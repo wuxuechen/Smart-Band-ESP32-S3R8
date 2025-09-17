@@ -29,5 +29,6 @@ extern QueueHandle_t wifi_cmd_queue;
 void wifi_task(void *arg);
 void wifi_init_sta(void);
 void wifi_switch(bool enable);
+void init_wifi_reconnect_system();
 
 #endif // WIFI_MANAGER_H

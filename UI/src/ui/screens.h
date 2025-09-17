@@ -61,6 +61,7 @@ typedef struct _objects_t {
     lv_obj_t *settings_version;
     lv_obj_t *settings_update;
     lv_obj_t *setttings_username;
+    lv_obj_t *setttings_update_animation;
 } objects_t;
 
 extern objects_t objects;
