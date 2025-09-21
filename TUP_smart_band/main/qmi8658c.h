@@ -1,3 +1,6 @@
+#ifndef HTTP_MUI_HEADER_H
+#define HTTP_MUI_HEADER_H
+
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -100,6 +103,7 @@ typedef struct {
     uint16_t gyro_sensitivity;
 } qmi_ctx_t;
 
+extern lvgl_msg_t msg;
 
 void qmi_init(qmi_ctx_t *ctx, uint8_t device_addr, uint32_t i2c_freq);
 
@@ -126,3 +130,5 @@ void handle_acc_gyr(const qmi_data_t *data, gait_metrics_t *gait_out);
 void imu_task(void *arg);
 
 void init_qmi8658(void);
+
+#endif

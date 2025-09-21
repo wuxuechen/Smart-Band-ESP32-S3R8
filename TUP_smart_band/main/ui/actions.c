@@ -15,6 +15,7 @@
 #include "wifi_connect.h"
 #include "gatt_server_service_table.h"
 #include "ui/images.h"
+#include "http_request.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -37,24 +38,59 @@ const ext_img_desc_t sports_images[10] = {
 void action_btn_hello_clicked(lv_event_t *e) {
 }
 
-static lv_timer_t * anim_timer = NULL;
 
-void animation_cb(lv_timer_t * timer){
-    lv_obj_clear_flag(objects.settings_update, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(objects.setttings_update_animation, LV_OBJ_FLAG_HIDDEN);
-
-    // stop the timer after one execution
-    lv_timer_del(timer);
-    anim_timer = NULL;
-}
-
-extern void action_update_btn_pressed(lv_event_t * e){
-	lv_obj_add_flag(objects.settings_update, LV_OBJ_FLAG_HIDDEN);
-    lv_obj_clear_flag(objects.setttings_update_animation, LV_OBJ_FLAG_HIDDEN);
-     if(anim_timer == NULL) {
-        anim_timer = lv_timer_create(animation_cb, 2000, NULL);
+extern void action_ota_update_pressed(lv_event_t * e)
+{
+	lv_obj_add_flag(objects.ota_btn_update,LV_OBJ_FLAG_HIDDEN);
+	lv_obj_add_flag(objects.ota_btn_cancel,LV_OBJ_FLAG_HIDDEN);
+	bt_switch(false);
+	ESP_LOGI("BT", "Switch OFF, Disable bluetooth, in order to keep wifi stable for ota");
+	BaseType_t task_result = xTaskCreatePinnedToCore(
+	    ota_background_task,    // Task function
+	    "ota_background_task",  // Task name
+	    4096,                   // Stack size
+	    NULL,                   // Parameters
+	    5,                      // Priority (lower than LVGL's 6)
+	    NULL,                   // Task handle (can store in a variable if needed)
+	    0                       // Core ID (0 or 1)
+	);
+		// Check if task creation succeeded
+	if (task_result == pdPASS) {
+	    ESP_LOGI("OTA", "Background OTA task created successfully");
+	} else {
+    	ESP_LOGE("OTA", "Failed to create OTA task: %d", task_result);
     }
+	
 }
+
+extern void action_ota_cancel_pressed(lv_event_t * e)
+{
+	lv_scr_load_anim(objects.setting, LV_SCR_LOAD_ANIM_FADE_IN, 300, 0, false);
+	
+}
+
+
+
+extern void action_setting_update_pressed(lv_event_t * e)
+{
+	BaseType_t task_result = xTaskCreatePinnedToCore(
+	    update_check,    // Task function
+	    "update_check",  // Task name
+	    4096,                   // Stack size
+	    NULL,                   // Parameters
+	    5,                      // Priority (lower than LVGL's 6)
+	    NULL,                   // Task handle (can store in a variable if needed)
+	    0                       // Core ID (0 or 1)
+	);
+	
+	if (task_result == pdPASS) {
+	    ESP_LOGI("OTA", "The task to check update created successfully");
+	} else {
+    	ESP_LOGE("OTA", "Failed to create the task to check update: %d", task_result);
+    }
+	
+}
+
 
 void set_coach(int i){
 	if(i==0){

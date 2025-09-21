@@ -27,16 +27,7 @@ extern const lv_img_dsc_t img_sun;
 extern const lv_img_dsc_t img_temperature;
 extern const lv_img_dsc_t img_arrow_l;
 extern const lv_img_dsc_t img_arrow_r;
-extern const lv_img_dsc_t img_u1;
-extern const lv_img_dsc_t img_u2;
-extern const lv_img_dsc_t img_u3;
-extern const lv_img_dsc_t img_u4;
-extern const lv_img_dsc_t img_u5;
-extern const lv_img_dsc_t img_u6;
-extern const lv_img_dsc_t img_u7;
-extern const lv_img_dsc_t img_u8;
-extern const lv_img_dsc_t img_u9;
-extern const lv_img_dsc_t img_u10;
+extern const lv_img_dsc_t img_tabel;
 
 #ifndef EXT_IMG_DESC_T
 #define EXT_IMG_DESC_T
@@ -46,7 +37,7 @@ typedef struct _ext_img_desc_t {
 } ext_img_desc_t;
 #endif
 
-extern const ext_img_desc_t images[30];
+extern const ext_img_desc_t images[21];
 
 
 #ifdef __cplusplus

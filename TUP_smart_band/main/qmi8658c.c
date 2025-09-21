@@ -228,7 +228,7 @@ void handle_acc_gyr(const qmi_data_t *data, gait_metrics_t *gait_out) {
     printf("  Steps: %d\n", gait_out->steps);*/
 }
 
-
+lvgl_msg_t msg = {0};
 
 // FreeRTOS task
 void imu_task(void *arg) {
@@ -242,7 +242,6 @@ void imu_task(void *arg) {
     qmi_set_mode(&imu, 0x03); // normal mode
     qmi_acc_set_scale(&imu, 1); // 4G
     qmi_gyro_set_odr(&imu, 0x03); // example ODR
-	lvgl_msg_t msg = {0};
     while(1) {
         if(qmi_read(&imu, &data) == QMI_RESULT_OK) {
             //printf("Acc: %.2f %.2f %.2f\n", data.acc_xyz.x, data.acc_xyz.y, data.acc_xyz.z);

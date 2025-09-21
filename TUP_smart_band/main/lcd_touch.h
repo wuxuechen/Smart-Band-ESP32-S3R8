@@ -20,6 +20,7 @@
 #include "ui/screens.h"
 #include "ui/ui.h"
 #include <lvgl.h>
+#include "constant.h"
 
 /* LCD size */
 #define LCD_H_RES (240)
@@ -46,15 +47,31 @@ typedef struct {
     uint8_t year;
 } rtc_time_t;
 
-typedef enum { MSG_TYPE_GAIT = 0, MSG_TYPE_RTC } lvgl_mgs_type_t;
+typedef struct {
+    char name[64];
+    int steps;
+} score_t;
+
+typedef enum { MSG_TYPE_GAIT = 0, MSG_TYPE_RTC, MSG_TYPE_TOP9, MSG_TYPE_UPDATE_CHECK, MSG_TYPE_UPDATE} lvgl_mgs_type_t;
 
 typedef struct{
 	lvgl_mgs_type_t type;
 	union {
         gait_metrics_t gait;
         rtc_time_t rtc;
+        score_t score[9];
+        char version[64];
+        int update_percent;
     };
 } lvgl_msg_t;
+
+typedef struct{
+	lv_obj_t *label_username;
+	lv_obj_t *label_steps;
+} user_objs_t;
+
+
+extern const user_objs_t label_objs[9];
 
 
 extern QueueHandle_t lvgl_update_queue;

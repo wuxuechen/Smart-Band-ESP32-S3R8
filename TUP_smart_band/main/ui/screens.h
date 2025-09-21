@@ -16,6 +16,7 @@ typedef struct _objects_t {
     lv_obj_t *activity_rank;
     lv_obj_t *coach;
     lv_obj_t *setting;
+    lv_obj_t *ota;
     lv_obj_t *settings_wifi_switch;
     lv_obj_t *setttings_bt_switch;
     lv_obj_t *home_date;
@@ -49,19 +50,44 @@ typedef struct _objects_t {
     lv_obj_t *obj7;
     lv_obj_t *obj8;
     lv_obj_t *obj9;
+    lv_obj_t *activity_rank_tabel;
+    lv_obj_t *activity_rank_name_0;
+    lv_obj_t *activity_rank_name_1;
+    lv_obj_t *activity_rank_name_2;
+    lv_obj_t *activity_rank_name_3;
+    lv_obj_t *activity_rank_name_4;
+    lv_obj_t *activity_rank_name_5;
+    lv_obj_t *activity_rank_name_6;
+    lv_obj_t *activity_rank_name_7;
+    lv_obj_t *activity_rank_name_8;
+    lv_obj_t *obj10;
+    lv_obj_t *obj11;
+    lv_obj_t *activity_rank_steps_0;
+    lv_obj_t *activity_rank_steps_1;
+    lv_obj_t *activity_rank_steps_2;
+    lv_obj_t *activity_rank_steps_3;
+    lv_obj_t *activity_rank_steps_4;
+    lv_obj_t *activity_rank_steps_5;
+    lv_obj_t *activity_rank_steps_6;
+    lv_obj_t *activity_rank_steps_7;
+    lv_obj_t *activity_rank_steps_8;
     lv_obj_t *coach_label;
     lv_obj_t *coach_img;
     lv_obj_t *coach_last_btn;
     lv_obj_t *coach_next_btn;
-    lv_obj_t *obj10;
-    lv_obj_t *obj11;
     lv_obj_t *obj12;
     lv_obj_t *obj13;
+    lv_obj_t *obj14;
+    lv_obj_t *obj15;
     lv_obj_t *setttings_tmp_label;
     lv_obj_t *settings_version;
-    lv_obj_t *settings_update;
     lv_obj_t *setttings_username;
-    lv_obj_t *setttings_update_animation;
+    lv_obj_t *settings_version_check;
+    lv_obj_t *obj16;
+    lv_obj_t *ota_update_percent;
+    lv_obj_t *ota_btn_update;
+    lv_obj_t *ota_btn_cancel;
+    lv_obj_t *ota_update_percent_label;
 } objects_t;
 
 extern objects_t objects;
@@ -75,6 +101,7 @@ enum ScreensEnum {
     SCREEN_ID_ACTIVITY_RANK = 6,
     SCREEN_ID_COACH = 7,
     SCREEN_ID_SETTING = 8,
+    SCREEN_ID_OTA = 9,
 };
 
 void create_screen_home();
@@ -100,6 +127,9 @@ void tick_screen_coach();
 
 void create_screen_setting();
 void tick_screen_setting();
+
+void create_screen_ota();
+void tick_screen_ota();
 
 void tick_screen_by_id(enum ScreensEnum screenId);
 void tick_screen(int screen_index);

@@ -6,6 +6,10 @@
  
 #include "lcd_touch.h"
 #include "http_server.h"
+#include "misc/lv_anim.h"
+#include "widgets/lv_arc.h"
+#include "widgets/lv_label.h"
+#include <string.h>
 /* LCD settings */
 #define LCD_SPI_NUM (SPI2_HOST)
 #define LCD_PIXEL_CLK_HZ (40 * 1000 * 1000)
@@ -261,10 +265,24 @@ const char *months[] = {
 };
 
 
+
+
 QueueHandle_t lvgl_update_queue = NULL;
 
 void lvgl_update_task(void *arg) {
     lvgl_msg_t msg;
+    const user_objs_t label_objs[9]=
+	{
+		{objects.activity_rank_name_0, objects.activity_rank_steps_0},
+	    {objects.activity_rank_name_1, objects.activity_rank_steps_1},
+	    {objects.activity_rank_name_2, objects.activity_rank_steps_2},
+	    {objects.activity_rank_name_3, objects.activity_rank_steps_3},
+	    {objects.activity_rank_name_4, objects.activity_rank_steps_4},
+	    {objects.activity_rank_name_5, objects.activity_rank_steps_5},
+	    {objects.activity_rank_name_6, objects.activity_rank_steps_6},
+	    {objects.activity_rank_name_7, objects.activity_rank_steps_7},
+	    {objects.activity_rank_name_8, objects.activity_rank_steps_8}
+	};
     while(1) {
         if(xQueueReceive(lvgl_update_queue, &msg, pdMS_TO_TICKS(100))) {
 			lvgl_port_lock(-1); 
@@ -294,8 +312,40 @@ void lvgl_update_task(void *arg) {
 					lv_label_set_text_fmt(objects.home_date, "%s %02d %s", months[t->month], t->day,  weekdays[t->weekday]);
 					lv_calendar_set_showed_date(objects.calendar_calendar, t->year, t->month+1);
 					lv_calendar_set_today_date(objects.calendar_calendar, t->year, t->month+1, t->day);
+				}				
+			}
+			
+			if (msg.type == MSG_TYPE_TOP9) {
+				for(int i = 0; i < 9; i++){
+					if(strcmp("-1", msg.score[i].name)==0)
+					{
+						break;
+					}
+					if(label_objs[i].label_username){
+						lv_label_set_text(label_objs[i].label_username, msg.score[i].name);
+					}
+					if(label_objs[i].label_steps){
+						lv_label_set_text_fmt(label_objs[i].label_steps, "%d", msg.score[i].steps);
+					}
 				}
-				
+			}
+			
+			if (msg.type == MSG_TYPE_UPDATE_CHECK){
+				if(objects.settings_version) {
+					if (strcmp(msg.version, "") == 0){
+						lv_label_set_text(objects.settings_version, "Up to date");
+					} else {
+						printf("The new version is: %s\n", msg.version);
+						lv_scr_load_anim(objects.ota, LV_SCR_LOAD_ANIM_FADE_OUT, 300, 0, false);
+					}
+				}
+			}
+			
+			if (msg.type == MSG_TYPE_UPDATE){
+				if(objects.ota_update_percent){
+					lv_arc_set_value(objects.ota_update_percent, msg.update_percent);
+					lv_label_set_text_fmt(objects.ota_update_percent_label, "%d%%", msg.update_percent);
+				}
 			}
 
 			lvgl_port_unlock();  // unlock after LVGL update
@@ -309,6 +359,7 @@ void app_main_display(void)
     /* Task lock */
     lvgl_port_lock(-1);
     ui_init();
+    lv_label_set_text(objects.settings_version, version);
     lvgl_update_queue = xQueueCreate(10, sizeof(lvgl_msg_t));
     if (!lvgl_update_queue) {
 	    ESP_LOGE(TAG, "Failed to create LVGL update queue");

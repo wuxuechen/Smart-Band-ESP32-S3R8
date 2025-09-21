@@ -5,6 +5,7 @@
 #include "misc/lv_timer.h"
 #include "ui/screens.h"
 #include "wifi_connect.h"
+#include "nvs_flash.h"
 //#include "http_server.h"
 
 #define I2C_MASTER_SCL 10
@@ -26,9 +27,19 @@ void i2c_bus_init(void) {
 
 void app_main(void)
 {
+	
 	i2c_bus_init();
 	init_rtc();
 	init_qmi8658();
+	
+	    /* Initialize NVS. this is very important for wifi and bluetooth*/
+    esp_err_t ret = nvs_flash_init();
+    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        ret = nvs_flash_init();
+    }
+    ESP_ERROR_CHECK( ret );
+	
     init_bluetooth();
     
     wifi_cmd_queue = xQueueCreate(4, sizeof(wifi_cmd_t));
