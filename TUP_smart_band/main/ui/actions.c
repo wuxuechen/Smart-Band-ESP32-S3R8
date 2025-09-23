@@ -2,20 +2,139 @@
 #define EEZ_LVGL_UI_EVENTS_H
 
 #include <lvgl.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include "core/lv_disp.h"
 #include "core/lv_event.h"
+#include "core/lv_obj.h"
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_check.h"
 #include "misc/lv_area.h"
 #include "screens.h"
+#include "widgets/lv_label.h"
+#include "wifi_connect.h"
+#include "gatt_server_service_table.h"
+#include "ui/images.h"
+#include "http_request.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+static int cursor_sports = 0;    
+const ext_img_desc_t sports_images[10] = {
+    { "Squats", &img_squats },
+    { "Pushups", &img_pushups },
+    { "Lunges", &img_lunges },
+    { "Burbees", &img_burbees },
+    { "Mountain Climb", &img_mountain_climb },
+    { "Jump Rope", &img_jump_rope },
+    { "Glute Bridges", &img_glute_bridges },
+    { "Superman", &img_superman },
+    { "Plank Holds", &img_plankholds },
+    { "Alternate Bird-Dog", &img_alternating_bird_dogs },
+};
+
 void action_btn_hello_clicked(lv_event_t *e) {
+}
+
+
+extern void action_ota_update_pressed(lv_event_t * e)
+{
+	lv_obj_add_flag(objects.ota_btn_update,LV_OBJ_FLAG_HIDDEN);
+	lv_obj_add_flag(objects.ota_btn_cancel,LV_OBJ_FLAG_HIDDEN);
+	bt_switch(false);
+	ESP_LOGI("BT", "Switch OFF, Disable bluetooth, in order to keep wifi stable for ota");
+	BaseType_t task_result = xTaskCreate(
+	    ota_background_task,    // Task function
+	    "ota_background_task",  // Task name
+	    4096,                   // Stack size
+	    NULL,                   // Parameters
+	    5,                      // Priority (lower than LVGL's 6)
+	    NULL                   // Task handle (can store in a variable if needed)
+	);
+		// Check if task creation succeeded
+	if (task_result == pdPASS) {
+	    ESP_LOGI("OTA", "Background OTA task created successfully");
+	} else {
+    	ESP_LOGE("OTA", "Failed to create OTA task: %d", task_result);
+    }
+	
+}
+
+extern void action_ota_cancel_pressed(lv_event_t * e)
+{
+	lv_scr_load_anim(objects.setting, LV_SCR_LOAD_ANIM_FADE_IN, 300, 0, false);
+	
+}
+
+
+
+extern void action_setting_update_pressed(lv_event_t * e)
+{
+	if(strcmp(version, version_from_server)==0){
+		lv_label_set_text(objects.settings_version, "Up to date");
+	} else {
+		printf("The new version is: %s\n", version_from_server);
+		lv_label_set_text(objects.settings_version, version);
+		lv_scr_load_anim(objects.ota, LV_SCR_LOAD_ANIM_FADE_OUT, 300, 0, false);
+	}
+}
+
+
+void set_coach(int i){
+	if(i==0){
+		lv_obj_add_state(objects.coach_last_btn, LV_STATE_DISABLED);   // Disable
+		lv_obj_clear_state(objects.coach_next_btn, LV_STATE_DISABLED); // Enable again
+	}else if(i==9){
+		lv_obj_add_state(objects.coach_next_btn, LV_STATE_DISABLED);   // Disable
+		lv_obj_clear_state(objects.coach_last_btn, LV_STATE_DISABLED); // Enable again
+	}else{
+		lv_obj_clear_state(objects.coach_last_btn, LV_STATE_DISABLED); // Enable again
+		lv_obj_clear_state(objects.coach_next_btn, LV_STATE_DISABLED); // Enable again
+	}
+	lv_label_set_text(objects.coach_label, sports_images[i].name);
+	lv_obj_align(objects.coach_label, LV_ALIGN_TOP_MID, 0, 2);
+	lv_img_set_src(objects.coach_img, sports_images[i].img_dsc);
+}
+
+extern void action_coach_last_btn_pressed(lv_event_t * e){
+	if(cursor_sports <= 0){
+		return;
+	}
+	cursor_sports--;
+	set_coach(cursor_sports);
+}
+extern void action_coach_next_btn_pressed(lv_event_t * e){
+	if(cursor_sports >= 9){
+		return;
+	}
+	cursor_sports++;
+	set_coach(cursor_sports);
+}
+
+extern void action_bt_switch(lv_event_t * e){
+	lv_obj_t *ta = lv_event_get_target(e);
+    if (lv_obj_has_state(ta, LV_STATE_CHECKED)) {
+        ESP_LOGI("BT", "Switch ON, Enable bluetooth");
+        bt_switch(true);
+    }else{
+		ESP_LOGI("BT", "Switch OFF, Disable bluetooth");
+		bt_switch(false);
+	}
+}
+
+
+extern void action_wifi_switch(lv_event_t * e) {
+    lv_obj_t * sw = lv_event_get_target(e);
+
+    wifi_cmd_t cmd = lv_obj_has_state(sw, LV_STATE_CHECKED) ?
+                        WIFI_CMD_ENABLE : WIFI_CMD_DISABLE;
+    // just post message, return immediately
+    xQueueSend(wifi_cmd_queue, &cmd, 0);
+
+    ESP_LOGI("LVGL", "Switch toggled, queued WiFi action");
 }
 
 void action_swipe_event_cb(lv_event_t * e){
@@ -46,14 +165,13 @@ void action_swipe_event_cb(lv_event_t * e){
 	}
 	
 	if(current == objects.calendar){
-
     	if(dir == LV_DIR_LEFT) {
         // Load Calendar screen with animation
         lv_scr_load_anim(objects.activity, LV_SCR_LOAD_ANIM_MOVE_LEFT, 300, 0, false);
     	}
     	if(dir == LV_DIR_RIGHT) {
         // Load Calendar screen with animation
-        lv_scr_load_anim(objects.ota, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 300, 0, false);
+        lv_scr_load_anim(objects.coach, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 300, 0, false);
     	}
     	if(dir == LV_DIR_TOP) {
         // Load Calendar screen with animation
@@ -126,11 +244,11 @@ void action_swipe_event_cb(lv_event_t * e){
 	if(current == objects.feedback){
     	if(dir == LV_DIR_LEFT) {
         // Load Calendar screen with animation
-        lv_scr_load_anim(objects.ota, LV_SCR_LOAD_ANIM_MOVE_LEFT, 300, 0, false);
+        lv_scr_load_anim(objects.coach, LV_SCR_LOAD_ANIM_MOVE_LEFT, 300, 0, false);
     	}
     	if(dir == LV_DIR_RIGHT) {
         // Load Calendar screen with animation
-        lv_scr_load_anim(objects.activity_rank, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 300, 0, false);
+        lv_scr_load_anim(objects.weather, LV_SCR_LOAD_ANIM_MOVE_RIGHT, 300, 0, false);
     	}
     	if(dir == LV_DIR_TOP) {
         // Load Calendar screen with animation
@@ -142,7 +260,7 @@ void action_swipe_event_cb(lv_event_t * e){
     	}
 	}
 
-	if(current == objects.ota){
+	if(current == objects.coach){
     	if(dir == LV_DIR_LEFT) {
         // Load Calendar screen with animation
         lv_scr_load_anim(objects.calendar, LV_SCR_LOAD_ANIM_MOVE_LEFT, 300, 0, false);
