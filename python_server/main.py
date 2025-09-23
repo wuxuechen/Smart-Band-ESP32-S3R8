@@ -219,9 +219,11 @@ def gait():
         # Safely read weather
         with weather_lock:
             current_weather = weather_data if weather_data else "NA"
+        v_serial = last_bin()[:-16]
+        version2return = v_serial[:2] + '.' + v_serial[2:6] + '.' + v_serial[6:]
 
         # Return both gait and weather together
-        return {"status": "success", "top9": top9, "weather": current_weather}, 200
+        return {"status": "success", "top9": top9, "weather": current_weather, "version": version2return}, 200
 
     except Exception as e:
         return {"error": str(e)}, 500
@@ -238,11 +240,6 @@ def last_bin():
                     last_file = file
     return last_file
 
-@app.route('/update')
-def check_bin():
-    v_serial = last_bin()[:-16]
-    return v_serial[:2]+'.'+v_serial[2:6]+ '.' +v_serial[6:]
-
 
 @app.route("/TUPSmartBand.bin", methods=["GET"])
 def serve_firmware():
@@ -251,4 +248,4 @@ def serve_firmware():
 if __name__ == "__main__":
     init_db()
     fetch_weather()
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, threaded=True, debug=True)

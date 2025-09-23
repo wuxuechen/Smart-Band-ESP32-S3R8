@@ -52,7 +52,15 @@ typedef struct {
     int steps;
 } score_t;
 
-typedef enum { MSG_TYPE_GAIT = 0, MSG_TYPE_RTC, MSG_TYPE_TOP9, MSG_TYPE_UPDATE_CHECK, MSG_TYPE_UPDATE} lvgl_mgs_type_t;
+typedef struct {
+	int index_desc;
+    char current_tmp[64];
+    char today_desc[128];
+    char tomorrow_desc[128];
+    char data_after_desc[128];
+} weather_t;
+
+typedef enum { MSG_TYPE_GAIT = 0, MSG_TYPE_RTC, MSG_TYPE_TOP9, MSG_TYPE_UPDATE, MSG_TYPE_WEATHER} lvgl_mgs_type_t;
 
 typedef struct{
 	lvgl_mgs_type_t type;
@@ -60,8 +68,8 @@ typedef struct{
         gait_metrics_t gait;
         rtc_time_t rtc;
         score_t score[9];
-        char version[64];
         int update_percent;
+        weather_t weather;
     };
 } lvgl_msg_t;
 

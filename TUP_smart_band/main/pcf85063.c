@@ -135,6 +135,6 @@ void init_rtc(void)
         ESP_LOGE(TAGRTC, "Failed to set time");
     }
     // Start RTC task
-    xTaskCreate(rtc_task, "rtc_task", 4096, NULL, 5, NULL);
+    xTaskCreate(rtc_task, "rtc_task", 2048, NULL, 5, NULL);
 }
 

@@ -271,5 +271,5 @@ void imu_task(void *arg) {
 }
 
 void init_qmi8658(void){
-    xTaskCreate(imu_task, "imu_task", 4096, NULL, 5, NULL);
+    xTaskCreate(imu_task, "imu_task", 3072, NULL, 5, NULL);
 }

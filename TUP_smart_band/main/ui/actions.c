@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include "core/lv_disp.h"
 #include "core/lv_event.h"
+#include "core/lv_obj.h"
 #include "esp_err.h"
 #include "esp_log.h"
 #include "esp_check.h"
@@ -45,14 +46,13 @@ extern void action_ota_update_pressed(lv_event_t * e)
 	lv_obj_add_flag(objects.ota_btn_cancel,LV_OBJ_FLAG_HIDDEN);
 	bt_switch(false);
 	ESP_LOGI("BT", "Switch OFF, Disable bluetooth, in order to keep wifi stable for ota");
-	BaseType_t task_result = xTaskCreatePinnedToCore(
+	BaseType_t task_result = xTaskCreate(
 	    ota_background_task,    // Task function
 	    "ota_background_task",  // Task name
 	    4096,                   // Stack size
 	    NULL,                   // Parameters
 	    5,                      // Priority (lower than LVGL's 6)
-	    NULL,                   // Task handle (can store in a variable if needed)
-	    0                       // Core ID (0 or 1)
+	    NULL                   // Task handle (can store in a variable if needed)
 	);
 		// Check if task creation succeeded
 	if (task_result == pdPASS) {
@@ -73,22 +73,13 @@ extern void action_ota_cancel_pressed(lv_event_t * e)
 
 extern void action_setting_update_pressed(lv_event_t * e)
 {
-	BaseType_t task_result = xTaskCreatePinnedToCore(
-	    update_check,    // Task function
-	    "update_check",  // Task name
-	    4096,                   // Stack size
-	    NULL,                   // Parameters
-	    5,                      // Priority (lower than LVGL's 6)
-	    NULL,                   // Task handle (can store in a variable if needed)
-	    0                       // Core ID (0 or 1)
-	);
-	
-	if (task_result == pdPASS) {
-	    ESP_LOGI("OTA", "The task to check update created successfully");
+	if(strcmp(version, version_from_server)==0){
+		lv_label_set_text(objects.settings_version, "Up to date");
 	} else {
-    	ESP_LOGE("OTA", "Failed to create the task to check update: %d", task_result);
-    }
-	
+		printf("The new version is: %s\n", version_from_server);
+		lv_label_set_text(objects.settings_version, version);
+		lv_scr_load_anim(objects.ota, LV_SCR_LOAD_ANIM_FADE_OUT, 300, 0, false);
+	}
 }
 
 
@@ -140,7 +131,6 @@ extern void action_wifi_switch(lv_event_t * e) {
 
     wifi_cmd_t cmd = lv_obj_has_state(sw, LV_STATE_CHECKED) ?
                         WIFI_CMD_ENABLE : WIFI_CMD_DISABLE;
-
     // just post message, return immediately
     xQueueSend(wifi_cmd_queue, &cmd, 0);
 

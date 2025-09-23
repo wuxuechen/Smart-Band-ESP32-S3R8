@@ -43,7 +43,7 @@ void app_main(void)
     init_bluetooth();
     
     wifi_cmd_queue = xQueueCreate(4, sizeof(wifi_cmd_t));
-    xTaskCreate(wifi_task, "wifi_task", 4096, NULL, 5, NULL);
+    xTaskCreate(wifi_task, "wifi_task", 3072, NULL, 5, NULL);
     
     ESP_ERROR_CHECK(app_lcd_init());
 

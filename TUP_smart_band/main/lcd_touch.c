@@ -10,6 +10,7 @@
 #include "widgets/lv_arc.h"
 #include "widgets/lv_label.h"
 #include <string.h>
+#include "ui/images.h"
 /* LCD settings */
 #define LCD_SPI_NUM (SPI2_HOST)
 #define LCD_PIXEL_CLK_HZ (40 * 1000 * 1000)
@@ -330,22 +331,29 @@ void lvgl_update_task(void *arg) {
 				}
 			}
 			
-			if (msg.type == MSG_TYPE_UPDATE_CHECK){
-				if(objects.settings_version) {
-					if (strcmp(msg.version, "") == 0){
-						lv_label_set_text(objects.settings_version, "Up to date");
-					} else {
-						printf("The new version is: %s\n", msg.version);
-						lv_scr_load_anim(objects.ota, LV_SCR_LOAD_ANIM_FADE_OUT, 300, 0, false);
-					}
-				}
-			}
-			
 			if (msg.type == MSG_TYPE_UPDATE){
 				if(objects.ota_update_percent){
 					lv_arc_set_value(objects.ota_update_percent, msg.update_percent);
 					lv_label_set_text_fmt(objects.ota_update_percent_label, "%d%%", msg.update_percent);
 				}
+			}
+			if(msg.type == MSG_TYPE_WEATHER){
+				int index = msg.weather.index_desc;
+                if (index == -1) {
+                    lv_label_set_text(objects.weather_current_label, "sunny");
+                    lv_label_set_text(objects.home_weather, "sunny");
+                    lv_img_set_src(objects.weather_current, &img_sun);
+                    lv_img_set_src(objects.home_weather_img, &img_sun);
+                } else {
+                    lv_label_set_text(objects.weather_current_label, images[index].name);
+                    lv_label_set_text(objects.home_weather, images[index].name);
+                    lv_img_set_src(objects.weather_current, images[index].img_dsc);
+                    lv_img_set_src(objects.home_weather_img, images[index].img_dsc);
+                }
+                lv_label_set_text_fmt(objects.weather_current_tmp_label, "%s°C", msg.weather.current_tmp);
+                lv_label_set_text(objects.weather_today, msg.weather.today_desc);
+				lv_label_set_text(objects.weather_tomorrow, msg.weather.tomorrow_desc);
+				lv_label_set_text(objects.weather_after, msg.weather.data_after_desc);
 			}
 
 			lvgl_port_unlock();  // unlock after LVGL update

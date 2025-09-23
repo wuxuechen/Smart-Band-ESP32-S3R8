@@ -11,9 +11,10 @@
 #include "esp_https_ota.h"
 #include "constant.h"
 
+extern char version_from_server[32];
+
 int get_img(const char* desc);
 
-void update_check(void *pvParameters);
 
 void ota_background_task(void *pvParameters);
 

@@ -728,15 +728,6 @@ void create_screen_setting() {
             lv_label_set_text(obj, "00.00");
         }
         {
-            // settings_version
-            lv_obj_t *obj = lv_label_create(parent_obj);
-            objects.settings_version = obj;
-            lv_obj_set_pos(obj, 61, 206);
-            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_label_set_text(obj, "V5.2009.01");
-        }
-        {
             // setttings_username
             lv_obj_t *obj = lv_label_create(parent_obj);
             objects.setttings_username = obj;
@@ -749,17 +740,19 @@ void create_screen_setting() {
             // settings_version_check
             lv_obj_t *obj = lv_btn_create(parent_obj);
             objects.settings_version_check = obj;
-            lv_obj_set_pos(obj, 33, 238);
+            lv_obj_set_pos(obj, 33, 227);
             lv_obj_set_size(obj, 175, 39);
             lv_obj_add_event_cb(obj, action_setting_update_pressed, LV_EVENT_PRESSED, (void *)0);
             {
                 lv_obj_t *parent_obj = obj;
                 {
+                    // settings_version
                     lv_obj_t *obj = lv_label_create(parent_obj);
-                    lv_obj_set_pos(obj, 0, 0);
+                    objects.settings_version = obj;
+                    lv_obj_set_pos(obj, 16, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-                    lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-                    lv_label_set_text(obj, "check version");
+                    lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_label_set_text(obj, "V5.2009.01");
                 }
             }
         }
@@ -804,7 +797,7 @@ void create_screen_ota() {
             lv_obj_t *obj = lv_btn_create(parent_obj);
             objects.ota_btn_update = obj;
             lv_obj_set_pos(obj, 124, 214);
-            lv_obj_set_size(obj, 75, 25);
+            lv_obj_set_size(obj, 100, 30);
             lv_obj_add_event_cb(obj, action_ota_update_pressed, LV_EVENT_PRESSED, (void *)0);
             {
                 lv_obj_t *parent_obj = obj;
@@ -821,8 +814,8 @@ void create_screen_ota() {
             // ota_btn_cancel
             lv_obj_t *obj = lv_btn_create(parent_obj);
             objects.ota_btn_cancel = obj;
-            lv_obj_set_pos(obj, 42, 214);
-            lv_obj_set_size(obj, 75, 25);
+            lv_obj_set_pos(obj, 17, 214);
+            lv_obj_set_size(obj, 100, 30);
             lv_obj_add_event_cb(obj, action_ota_cancel_pressed, LV_EVENT_PRESSED, (void *)0);
             {
                 lv_obj_t *parent_obj = obj;

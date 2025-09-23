@@ -6,11 +6,11 @@
 #include "widgets/lv_label.h"
 #include "ui/screens.h"
 #include "ui/images.h"
+#include <stdio.h>
 #include <string.h>
 #include "esp_ota_ops.h"
 #include "esp_partition.h"
 
-#define BUFFER_SIZE 4096
 
 int get_img(const char* desc){
 	if (!desc || !desc[0]) return -1;
@@ -31,8 +31,10 @@ int get_img(const char* desc){
     return -1; // not found
 }
 
+char version_from_server[32] = {0};
+
 esp_err_t http_event_handler(esp_http_client_event_t *evt) {
-    static char buffer[2048]; // accumulate data if multiple chunks
+    static char buffer[1536]; // accumulate data if multiple chunks
     static int offset = 0;
 
     switch(evt->event_id) {
@@ -55,7 +57,12 @@ esp_err_t http_event_handler(esp_http_client_event_t *evt) {
                     if (status && cJSON_IsString(status)) {
                         ESP_LOGI("RESPONSE", "Status: %s", status->valuestring);
                     }
-
+                    
+                    cJSON *version = cJSON_GetObjectItem(root, "version");
+                    if (version && cJSON_IsString(version)) {
+                        ESP_LOGI("RESPONSE", "Status: %s", version->valuestring);
+                    }
+					snprintf(version_from_server, sizeof(version_from_server), "%s",version->valuestring);
                     // Parse top9 data
                     lvgl_msg_t msg;
                     cJSON *top9 = cJSON_GetObjectItem(root, "top9");
@@ -125,29 +132,17 @@ esp_err_t http_event_handler(esp_http_client_event_t *evt) {
                         } 
                         // Check if weather is a JSON object with data
                         else if (cJSON_IsObject(weather)) {
+							lvgl_msg_t msg;
+							msg.type = MSG_TYPE_WEATHER;
                             // Current condition
                             cJSON *current = cJSON_GetObjectItem(weather, "current_condition");
                             if (current) {
                                 const char *temp = cJSON_GetObjectItem(current, "temp_C")->valuestring;
                                 const char *desc = cJSON_GetObjectItem(current, "weatherDesc")->valuestring;
                                 ESP_LOGI("WEATHER", "Current:%s Desc:%s", temp, desc);
+                                msg.weather.index_desc = get_img(desc);
+                                snprintf(msg.weather.current_tmp, sizeof(msg.weather.current_tmp), "%s°C", temp);
                                 
-                                int index = get_img(desc);
-                                if (index == -1) {
-                                    lv_label_set_text(objects.weather_current_label, "sunny");
-                                    lv_label_set_text(objects.home_weather, "sunny");
-                                    lv_img_set_src(objects.weather_current, &img_sun);
-                                    lv_img_set_src(objects.home_weather_img, &img_sun);
-                                } else {
-                                    lv_label_set_text(objects.weather_current_label, images[index].name);
-                                    lv_label_set_text(objects.home_weather, images[index].name);
-                                    lv_img_set_src(objects.weather_current, images[index].img_dsc);
-                                    lv_img_set_src(objects.home_weather_img, images[index].img_dsc);
-                                }
-                                
-                                if (temp) {
-                                    lv_label_set_text_fmt(objects.weather_current_tmp_label, "%s°C", temp);
-                                }
                             }
 
                             // Today forecast
@@ -161,11 +156,8 @@ esp_err_t http_event_handler(esp_http_client_event_t *evt) {
                                 const char *max2show = maxC ? maxC : "N/A";
                                 const char *min2show = minC ? minC : "N/A";
                                 const char *desc2show = desc ? desc : "N/A";					
-                                
-                                char temp_buf[64];
-                                snprintf(temp_buf, sizeof(temp_buf), "Today: %s°C-%s°C\n%s", 
+                                snprintf(msg.weather.today_desc, sizeof(msg.weather.today_desc), "Today: %s°C-%s°C\n%s", 
                                          max2show, min2show, desc2show);
-                                lv_label_set_text(objects.weather_today, temp_buf);
                             }
 
                             // Future days
@@ -183,25 +175,24 @@ esp_err_t http_event_handler(esp_http_client_event_t *evt) {
                                     const char *date2show = date ? date : "N/A";
                                     const char *max2show = maxC ? maxC : "N/A";
                                     const char *min2show = minC ? minC : "N/A";
-                                    const char *desc2show = desc ? desc : "N/A";					
-                                    
-                                    char temp_buf[64];
-                                    snprintf(temp_buf, sizeof(temp_buf), "%s: %s°C-%s°C\n%s", 
-                                             date2show, max2show, min2show, desc2show);
+                                    const char *desc2show = desc ? desc : "N/A";
                                     
                                     if (i == 0) {
-                                        lv_label_set_text(objects.weather_tomorrow, temp_buf);
+										snprintf(msg.weather.tomorrow_desc, sizeof(msg.weather.tomorrow_desc), "%s: %s°C-%s°C\n%s", 
+                                             date2show, max2show, min2show, desc2show);                                        
                                     }
                                     if (i == 1) {
-                                        lv_label_set_text(objects.weather_after, temp_buf);
+										snprintf(msg.weather.data_after_desc, sizeof(msg.weather.data_after_desc), "%s: %s°C-%s°C\n%s", 
+                                             date2show, max2show, min2show, desc2show);
                                     }
                                 }
                             }
+                            xQueueSend(lvgl_update_queue, &msg, 0);
                         }
                     } else {
                         ESP_LOGW("WEATHER", "No weather data found in response");
                     }
-
+					
                     cJSON_Delete(root);
                     offset = 0; // Reset for next request
                 }
@@ -226,10 +217,8 @@ void fetch_weather_gait()
 	wifi_ap_record_t ap_info;  // declare a struct
     esp_err_t ret = esp_wifi_sta_get_ap_info(&ap_info);  // pass its address
 
-    if (ret == ESP_OK) {
-        ESP_LOGI("WIFI", " was connected to SSID: %s, RSSI: %d, http request is available", ap_info.ssid, ap_info.rssi);
-    } else {
-        ESP_LOGW("WIFI", "Not connected to any AP, http is not available");
+    if (ret != ESP_OK) {
+		ESP_LOGW("WIFI", "Not connected to any AP, http is not available");
         return;
     }
     char post_data[256];  // Buffer to hold the JSON string
@@ -243,7 +232,7 @@ void fetch_weather_gait()
     esp_http_client_config_t config = {
 	    .url = "http://192.168.0.122:5000/gait",
 	    .event_handler = http_event_handler,
-	    .timeout_ms = 8000
+	    .timeout_ms = 15000
     };
 	ESP_LOGI("HTTP", "url:%s\n", config.url);
     esp_http_client_handle_t client = esp_http_client_init(&config);
@@ -258,9 +247,6 @@ void fetch_weather_gait()
     // Set POST payload (use strlen(post_data) for length, correct type: size_t)
     esp_http_client_set_post_field(client, post_data, strlen(post_data));
     
-    // Set the POST data
-    esp_http_client_set_post_field(client, post_data, strlen(post_data));
-    
     esp_err_t err = esp_http_client_perform(client);
 
     if (err == ESP_OK) {
@@ -272,104 +258,6 @@ void fetch_weather_gait()
 
     esp_http_client_cleanup(client);
 }
-
-esp_err_t http_event_handler_udpate_check(esp_http_client_event_t *evt) {
-	switch (evt->event_id) {
-        case HTTP_EVENT_ON_DATA:
-            ESP_LOGI("HTTP", "Received data: %.*s", evt->data_len, (char*)evt->data);
-            lvgl_msg_t msg;
-            msg.type = MSG_TYPE_UPDATE_CHECK;
-            if (strcmp(version, (char*)evt->data)==0) {
-				msg.version[0] = '\0';
-			}else{
-				strncpy(msg.version, (char*)evt->data, evt->data_len);
-                msg.version[evt->data_len] = '\0';  // Ensure null termination
-			}
-			xQueueSend(lvgl_update_queue, &msg, 0);
-            // Process the received data here
-            break;
-        case HTTP_EVENT_ON_FINISH:
-            ESP_LOGI("HTTP", "Request finished");
-            break;
-        case HTTP_EVENT_ERROR:
-            ESP_LOGE("HTTP", "Request error");
-            break;
-        default:
-            break;
-    }
-    return ESP_OK;
-}
-
-void update_check(void *pvParameters)
-{
-    // Check WiFi connection first
-    wifi_ap_record_t ap_info;
-    esp_err_t ret = esp_wifi_sta_get_ap_info(&ap_info);
-    if (ret != ESP_OK) {
-        ESP_LOGW("WIFI", "Not connected to any AP, aborting HTTP request");
-        vTaskDelete(NULL);
-        return; // Ensure task exits after deletion
-    }
-    ESP_LOGI("WIFI", "Connected to SSID: %s, RSSI: %d", ap_info.ssid, ap_info.rssi);
-
-    // Increase stack size if you see memory errors (configured when creating task)
-    // Use at least 8192 bytes for HTTP operations
-
-    // HTTP client configuration with proper memory management
-    esp_http_client_config_t config = {
-        .url = "http://192.168.0.122:5000/update",
-        .event_handler = http_event_handler_udpate_check,
-        .timeout_ms = 8000,
-        .buffer_size = 1024, // Explicitly set buffer size to prevent allocation issues
-        .buffer_size_tx = 512,
-    };
-
-    ESP_LOGI("HTTP", "Requesting URL: %s", config.url);
-    
-    // Initialize client
-    esp_http_client_handle_t client = esp_http_client_init(&config);
-    if (!client) { // Check for initialization failure
-        ESP_LOGE("HTTP", "Failed to initialize HTTP client");
-        vTaskDelete(NULL);
-        return;
-    }
-
-    // Set request method explicitly (GET is default but good practice)
-    esp_http_client_set_method(client, HTTP_METHOD_GET);
-
-    // Perform request with error checking
-    esp_err_t err = esp_http_client_perform(client);
-    if (err == ESP_OK) {
-        int status_code = esp_http_client_get_status_code(client);
-        int content_length = esp_http_client_get_content_length(client);
-        ESP_LOGI("HTTP", "Request successful - Status: %d, Content length: %d", 
-                 status_code, content_length);
-        
-        // Only process if we have a successful response (200 OK)
-        if (status_code == 200 && content_length > 0) {
-            // Read response data if needed
-            char *response = (char*)malloc(content_length + 1);
-            if (response) {
-                ssize_t read_len = esp_http_client_read(client, response, content_length);
-                if (read_len > 0) {
-                    response[read_len] = '\0';
-                    ESP_LOGI("HTTP", "Response: %s", response);
-                    // Process response here
-                }
-                free(response); // Clean up allocated memory
-            }
-        }
-    } else {
-        ESP_LOGE("HTTP", "Request failed: %s", esp_err_to_name(err));
-    }
-
-    // Clean up client resources
-    esp_http_client_cleanup(client);
-
-    // Delete task when done (since this is a one-time check)
-    vTaskDelete(NULL);
-}
-
 
 static int total_firmware_size = 0;
 static int downloaded_size = 0;
@@ -539,9 +427,9 @@ void weather_task(void *pvParameter)
 }
 
 void init_weather(){
-	BaseType_t ret = xTaskCreate(weather_task, "weather_task", 4096, NULL, 4, NULL);
+	BaseType_t ret = xTaskCreate(weather_task, "weather_task", 6144, NULL, 5, NULL);
 	if(ret != pdPASS) {
-    ESP_LOGE("TASK", "Failed to create weather_task!");
-}
+	    ESP_LOGE("TASK", "Failed to create weather_task!");
+	}
 }
 

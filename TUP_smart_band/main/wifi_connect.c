@@ -45,7 +45,7 @@ void obtain_time(void)
     }
 }
 
-void set_local_time(void *pvParameters)
+void set_local_time()
 {
     // 1. Obtain SNTP / network time
     obtain_time();
@@ -81,7 +81,6 @@ void set_local_time(void *pvParameters)
     } else {
         ESP_LOGE(TAGRTC, "Failed to set time");
     }
-    vTaskDelete(NULL); // Delete task when done
 }
 
 void wifi_task(void *arg) {
@@ -112,9 +111,8 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base,
         ip_event_got_ip_t* event = (ip_event_got_ip_t*) event_data;
         ESP_LOGI(TAG_WiFi, "Got IP: " IPSTR, IP2STR(&event->ip_info.ip));
         // Start post-WiFi tasks here (only once)
-
-        xTaskCreate(set_local_time, "set_local_time", 4096, NULL, 5, NULL);
         init_weather(); // creates weather_task
+        set_local_time();
 
     	    // start async weather per minutes
 /*    	vTaskDelay(pdMS_TO_TICKS(5000));
@@ -130,9 +128,13 @@ void wifi_init_sta(void)
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     esp_netif_create_default_wifi_sta();
-
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_wifi_init(&cfg));
+    
+    cfg.static_rx_buf_num   = 4;   // default 10
+	cfg.dynamic_rx_buf_num  = 8;   // default 32
+	cfg.static_tx_buf_num   = 4;   // default 16
+	cfg.cache_tx_buf_num    = 4;   // (if present in your IDF version)
+	ESP_ERROR_CHECK(esp_wifi_init(&cfg));
 
     esp_event_handler_instance_t instance_any_id;
     esp_event_handler_instance_t instance_got_ip;

@@ -1,2 +1,2 @@
 #include "constant.h"
-char version[] = "V5.0921.02";
+char version[] = "V5.0922.01";
