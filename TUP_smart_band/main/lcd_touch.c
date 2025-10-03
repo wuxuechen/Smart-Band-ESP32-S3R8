@@ -5,12 +5,15 @@
  */
  
 #include "lcd_touch.h"
+#include "constant.h"
+#include "core/lv_obj_pos.h"
 #include "http_server.h"
 #include "misc/lv_anim.h"
 #include "widgets/lv_arc.h"
 #include "widgets/lv_label.h"
 #include <string.h>
 #include "ui/images.h"
+#include "io_flash.h"
 /* LCD settings */
 #define LCD_SPI_NUM (SPI2_HOST)
 #define LCD_PIXEL_CLK_HZ (40 * 1000 * 1000)
@@ -355,6 +358,10 @@ void lvgl_update_task(void *arg) {
 				lv_label_set_text(objects.weather_tomorrow, msg.weather.tomorrow_desc);
 				lv_label_set_text(objects.weather_after, msg.weather.data_after_desc);
 			}
+			
+			if (msg.type == MSG_TYPE_USERNAME){
+				init_ui_variables();
+			}
 
 			lvgl_port_unlock();  // unlock after LVGL update
         }
@@ -362,12 +369,43 @@ void lvgl_update_task(void *arg) {
     }
 }
 
+void init_ui_variables(){
+	lv_label_set_text(objects.settings_version, version);
+   	read_data_from_nvs("USER",USERNAME,DATA_SIZE);
+   	lv_label_set_text(objects.setttings_username,USERNAME);	
+	// Center text inside the label
+	lv_obj_set_style_text_align(objects.setttings_username, LV_TEXT_ALIGN_CENTER, 0);
+	
+	// Keep Y fixed
+	lv_coord_t current_y = 32;
+	lv_obj_set_y(objects.setttings_username, current_y);
+}
+
+void init_variables(){
+	char ssid_pswd[DATA_SIZE*2] = {0};
+	read_data_from_nvs("WIFI",ssid_pswd,DATA_SIZE*2);
+	char *comma_pos = strchr(ssid_pswd, ',');
+    if (comma_pos != NULL) {
+        // Copy first part to WIFI_SSID
+        size_t ssid_len = comma_pos - ssid_pswd;
+        if (ssid_len >= DATA_SIZE) ssid_len = DATA_SIZE - 1;
+        strncpy(WIFI_SSID, ssid_pswd, ssid_len);
+        WIFI_SSID[ssid_len] = '\0';
+        // Copy second part to WIFI_PASS
+        strncpy(WIFI_PASS, comma_pos + 1, DATA_SIZE - 1);
+        WIFI_PASS[DATA_SIZE - 1] = '\0';
+    }
+    printf("SSID: %s\n", WIFI_SSID);
+    printf("PASS: %s\n", WIFI_PASS);
+}
+
 void app_main_display(void)
 {
     /* Task lock */
     lvgl_port_lock(-1);
     ui_init();
-    lv_label_set_text(objects.settings_version, version);
+    init_ui_variables();
+    init_variables();
     lvgl_update_queue = xQueueCreate(10, sizeof(lvgl_msg_t));
     if (!lvgl_update_queue) {
 	    ESP_LOGE(TAG, "Failed to create LVGL update queue");

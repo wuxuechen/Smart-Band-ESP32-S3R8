@@ -1,82 +1,26 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    android:orientation="vertical">
 
-    <include
-        android:id="@+id/app_bar_main"
-        layout="@layout/app_bar_main"
+    <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:title="Bluetooth Scanner"
+        android:titleTextColor="@android:color/white"/>
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer" />
+    <Button
+        android:id="@+id/btn_scan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Scan Devices"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/purple_200"/>
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/lv_bluetooth_devices"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp"
-        tools:context=".MainActivity">
-
-        <TextView
-            android:id="@+id/tv_connection_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/status_not_connected"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:layout_marginBottom="16dp"/>
-
-        <Button
-            android:id="@+id/btn_scan_bluetooth"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/scan_bluetooth_devices" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/available_bluetooth_ble_devices"
-            android:layout_marginTop="8dp"/>
-
-        <ListView
-            android:id="@+id/lv_bluetooth_devices"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"/>
-
-        <Button
-            android:id="@+id/btn_scan_wifi"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/scan_wi_fi_networks_2_4ghz" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/available_wi_fi_networks"
-            android:layout_marginTop="8dp"/>
-
-        <ListView
-            android:id="@+id/lv_wifi_networks"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="8dp"/>
-
-    </LinearLayout>
-
-</androidx.drawerlayout.widget.DrawerLayout>
+        android:dividerHeight="1dp"/>
+</LinearLayout>

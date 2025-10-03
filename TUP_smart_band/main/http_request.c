@@ -230,7 +230,7 @@ void fetch_weather_gait()
              msg.gait.steps);   // Use steps from msg.gait
 	
     esp_http_client_config_t config = {
-	    .url = "http://192.168.0.122:5000/gait",
+	    .url = "http://52.74.153.124:18711/gait",
 	    .event_handler = http_event_handler,
 	    .timeout_ms = 15000
     };
@@ -281,7 +281,7 @@ void ota_background_task(void *pvParameters) {
 
     // HTTP client configuration
     esp_http_client_config_t config = {
-        .url = "http://192.168.0.122:5000/TUPSmartBand.bin",
+        .url = "http://52.74.153.124:18711/TUPSmartBand.bin",
         .timeout_ms = 15000,
         .keep_alive_enable = true,
     };

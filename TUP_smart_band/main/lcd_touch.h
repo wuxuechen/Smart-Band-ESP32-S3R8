@@ -22,6 +22,7 @@
 #include <lvgl.h>
 #include "constant.h"
 
+
 /* LCD size */
 #define LCD_H_RES (240)
 #define LCD_V_RES (280)
@@ -60,7 +61,7 @@ typedef struct {
     char data_after_desc[128];
 } weather_t;
 
-typedef enum { MSG_TYPE_GAIT = 0, MSG_TYPE_RTC, MSG_TYPE_TOP9, MSG_TYPE_UPDATE, MSG_TYPE_WEATHER} lvgl_mgs_type_t;
+typedef enum { MSG_TYPE_GAIT = 0, MSG_TYPE_RTC, MSG_TYPE_TOP9, MSG_TYPE_UPDATE, MSG_TYPE_WEATHER, MSG_TYPE_USERNAME} lvgl_mgs_type_t;
 
 typedef struct{
 	lvgl_mgs_type_t type;
@@ -93,5 +94,9 @@ void app_touch_init();
 void app_main_display(void);
 
 void lvgl_update_task(void *arg);
+
+void init_ui_variables();
+
+void init_variables();
 
 #endif //LCD_TP_MANAGER_H

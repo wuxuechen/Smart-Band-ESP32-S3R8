@@ -1,4 +1,9 @@
 #ifndef CONSTANT_HEADER_H
 #define CONSTANT_HEADER_H
-	 extern char version[];
+#include <stdint.h>
+#define DATA_SIZE 64
+extern char version[];
+extern char WIFI_SSID[];
+extern char WIFI_PASS[];
+extern char USERNAME[];
 #endif // CONSTANT_HEADER_H
