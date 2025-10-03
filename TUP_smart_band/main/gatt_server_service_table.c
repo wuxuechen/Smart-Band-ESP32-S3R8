@@ -16,6 +16,7 @@
 
 
 #include "gatt_server_service_table.h"
+#include "io_flash.h"
 /* Attributes State Machine */
 enum
 {
@@ -357,6 +358,12 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
             if (!param->write.is_prep){
                 // the data length of gattc write  must be less than GATTS_CHAR_VAL_LEN_MAX.
                 ESP_LOGI(GATTS_TABLE_TAG, "GATT_WRITE_EVT, handle = %d, value len = %d, value :%s", param->write.handle, param->write.len,param->write.value);
+                char *str = calloc(param->write.len + 1, 1);
+			    memcpy(str, param->write.value, param->write.len);
+			    ESP_LOGI(GATTS_TABLE_TAG, "Full string: %s", str);
+			    parse_and_save(str);
+			    free(str);
+                
                 esp_log_buffer_hex(GATTS_TABLE_TAG, param->write.value, param->write.len);
                 if (heart_rate_handle_table[IDX_CHAR_CFG_A] == param->write.handle && param->write.len == 2){
                     uint16_t descr_value = param->write.value[1]<<8 | param->write.value[0];
@@ -406,7 +413,17 @@ static void gatts_profile_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_
         case ESP_GATTS_EXEC_WRITE_EVT:
             // the length of gattc prepare write data must be less than GATTS_CHAR_VAL_LEN_MAX.
             ESP_LOGI(GATTS_TABLE_TAG, "ESP_GATTS_EXEC_WRITE_EVT");
-            example_exec_write_event_env(&prepare_write_env, param);
+            ESP_LOGI(GATTS_TABLE_TAG, "ESP_GATTS_EXEC_WRITE_EVT, total_len=%d", prepare_write_env.prepare_len);
+		    esp_log_buffer_hex(GATTS_TABLE_TAG, prepare_write_env.prepare_buf, 
+		                       prepare_write_env.prepare_len);
+		
+		    // If it’s a string, print as string too (ensure null termination)
+		    char *str = calloc(prepare_write_env.prepare_len + 1, 1);
+		    memcpy(str, prepare_write_env.prepare_buf, prepare_write_env.prepare_len);
+		    ESP_LOGI(GATTS_TABLE_TAG, "Full string: %s", str);
+		    parse_and_save(str);
+		    free(str);
+		    example_exec_write_event_env(&prepare_write_env, param);
             break;
         case ESP_GATTS_MTU_EVT:
             ESP_LOGI(GATTS_TABLE_TAG, "ESP_GATTS_MTU_EVT, MTU %d", param->mtu.mtu);

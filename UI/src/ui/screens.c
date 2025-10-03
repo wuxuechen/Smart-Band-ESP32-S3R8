@@ -682,13 +682,13 @@ void create_screen_setting() {
             lv_obj_t *obj = lv_switch_create(parent_obj);
             objects.settings_wifi_switch = obj;
             lv_obj_set_pos(obj, 160, 125);
-            lv_obj_set_size(obj, 62, 25);
+            lv_obj_set_size(obj, 70, 40);
             lv_obj_add_event_cb(obj, event_handler_checked_cb_setting_settings_wifi_switch, LV_EVENT_VALUE_CHANGED, (void *)0);
         }
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
             objects.obj13 = obj;
-            lv_obj_set_pos(obj, 18, 126);
+            lv_obj_set_pos(obj, 18, 133);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_label_set_text(obj, "WiFi");
@@ -696,7 +696,7 @@ void create_screen_setting() {
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
             objects.obj14 = obj;
-            lv_obj_set_pos(obj, 18, 171);
+            lv_obj_set_pos(obj, 18, 188);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_label_set_text(obj, "Bluetooth");
@@ -705,8 +705,8 @@ void create_screen_setting() {
             // setttings_bt_switch
             lv_obj_t *obj = lv_switch_create(parent_obj);
             objects.setttings_bt_switch = obj;
-            lv_obj_set_pos(obj, 160, 171);
-            lv_obj_set_size(obj, 62, 25);
+            lv_obj_set_pos(obj, 160, 180);
+            lv_obj_set_size(obj, 70, 40);
             lv_obj_add_event_cb(obj, event_handler_checked_cb_setting_setttings_bt_switch, LV_EVENT_VALUE_CHANGED, (void *)0);
             lv_obj_add_state(obj, LV_STATE_CHECKED);
         }
@@ -731,8 +731,8 @@ void create_screen_setting() {
             // setttings_username
             lv_obj_t *obj = lv_label_create(parent_obj);
             objects.setttings_username = obj;
-            lv_obj_set_pos(obj, 81, 32);
-            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_pos(obj, 0, 39);
+            lv_obj_set_size(obj, 240, LV_SIZE_CONTENT);
             lv_obj_set_style_text_color(obj, lv_color_hex(0xfffcff00), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_label_set_text(obj, "Joseph");
         }
@@ -740,21 +740,29 @@ void create_screen_setting() {
             // settings_version_check
             lv_obj_t *obj = lv_btn_create(parent_obj);
             objects.settings_version_check = obj;
-            lv_obj_set_pos(obj, 33, 227);
-            lv_obj_set_size(obj, 175, 39);
+            lv_obj_set_pos(obj, 160, 234);
+            lv_obj_set_size(obj, 70, 40);
             lv_obj_add_event_cb(obj, action_setting_update_pressed, LV_EVENT_PRESSED, (void *)0);
             {
                 lv_obj_t *parent_obj = obj;
                 {
-                    // settings_version
                     lv_obj_t *obj = lv_label_create(parent_obj);
-                    objects.settings_version = obj;
-                    lv_obj_set_pos(obj, 16, 0);
+                    objects.obj16 = obj;
+                    lv_obj_set_pos(obj, -11, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                     lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
-                    lv_label_set_text(obj, "V5.2009.01");
+                    lv_label_set_text(obj, "check");
                 }
             }
+        }
+        {
+            // settings_version
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            objects.settings_version = obj;
+            lv_obj_set_pos(obj, 18, 242);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "V5.2009.01");
         }
     }
     
@@ -774,7 +782,7 @@ void create_screen_ota() {
         lv_obj_t *parent_obj = obj;
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
-            objects.obj16 = obj;
+            objects.obj17 = obj;
             lv_obj_set_pos(obj, 79, 0);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_obj_set_style_text_color(obj, lv_color_hex(0xffffffff), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -791,6 +799,7 @@ void create_screen_ota() {
             lv_arc_set_bg_start_angle(obj, 0);
             lv_arc_set_bg_end_angle(obj, 360);
             lv_arc_set_rotation(obj, 90);
+            lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICKABLE);
         }
         {
             // ota_btn_update

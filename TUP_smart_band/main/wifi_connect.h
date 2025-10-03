@@ -13,9 +13,7 @@
 #include "pcf85063.h"
 #include "http_request.h"
 #include "http_server.h"
-
-#define WIFI_SSID      "HelloRice"
-#define WIFI_PASS      "12345679"
+#include "constant.h"
 
 #define WIFI_CONNECTED_BIT BIT0
 

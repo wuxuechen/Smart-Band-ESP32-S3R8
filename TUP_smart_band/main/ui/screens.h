@@ -82,8 +82,9 @@ typedef struct _objects_t {
     lv_obj_t *setttings_tmp_label;
     lv_obj_t *setttings_username;
     lv_obj_t *settings_version_check;
-    lv_obj_t *settings_version;
     lv_obj_t *obj16;
+    lv_obj_t *settings_version;
+    lv_obj_t *obj17;
     lv_obj_t *ota_update_percent;
     lv_obj_t *ota_btn_update;
     lv_obj_t *ota_btn_cancel;

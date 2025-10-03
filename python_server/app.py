@@ -248,4 +248,4 @@ def serve_firmware():
 if __name__ == "__main__":
     init_db()
     fetch_weather()
-    app.run(host="0.0.0.0", port=5000, threaded=True, debug=True)
+    app.run(host="127.0.0.1", port=5000, threaded=True, debug=True)

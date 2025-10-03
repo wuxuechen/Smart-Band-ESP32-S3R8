@@ -1,8 +1,7 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[UI.eez-project]:/userPages/8",
-    "selectedActionObject": "[UI.eez-project]:/actions/6",
-    "selectedBitmapObject": "[UI.eez-project]:/bitmaps/30",
+    "selectedUserPageObject": "[UI.eez-project]:/userPages/7",
+    "selectedActionObject": "[UI.eez-project]:/actions/7",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
     }
@@ -26,7 +25,7 @@
           {
             "type": "border",
             "selected": 2,
-            "size": 240,
+            "size": 134.5,
             "location": "right",
             "children": [
               {
@@ -127,6 +126,7 @@
                   "type": "tabset",
                   "id": "#3e501d30-bf87-45fa-bbb0-6eb5d47a2434",
                   "weight": 1.0666666666666667,
+                  "selected": 2,
                   "enableClose": false,
                   "children": [
                     {
@@ -192,7 +192,8 @@
             {
               "type": "tabset",
               "id": "EDITORS",
-              "weight": 42.532196407925085,
+              "weight": 41.42234127743684,
+              "selected": 2,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
@@ -232,7 +233,7 @@
                 {
                   "type": "tab",
                   "id": "#a540ba6f-86be-42d4-a965-16801142e222",
-                  "name": "OTA",
+                  "name": "Coach",
                   "component": "editor",
                   "config": {
                     "objectPath": "[UI.eez-project]:/userPages/6",
@@ -307,17 +308,18 @@
                   },
                   "icon": "svg:page"
                 }
-              ]
+              ],
+              "active": true
             },
             {
               "type": "row",
               "id": "#a002bc0a-8186-4cd2-88ff-be4041c2c173",
-              "weight": 34.58744710860367,
+              "weight": 35.69730223909191,
               "children": [
                 {
                   "type": "tabset",
                   "id": "#72734f15-5b9e-4766-941d-18265a0db73b",
-                  "weight": 2.3152639087018545,
+                  "weight": 1.6368932038834951,
                   "children": [
                     {
                       "type": "tab",
@@ -327,13 +329,12 @@
                       "enableClose": false,
                       "icon": "svg:properties"
                     }
-                  ],
-                  "active": true
+                  ]
                 },
                 {
                   "type": "tabset",
                   "id": "#929c6da5-e302-412b-aa28-256006bc187a",
-                  "weight": 0.6847360912981455,
+                  "weight": 1.3631067961165049,
                   "children": [
                     {
                       "type": "tab",
@@ -1259,13 +1260,17 @@
     "[UI.eez-project]:/userPages/7[flow-state]": {
       "selection": {
         "0": {
-          "0": {}
+          "0": {},
+          "7": {
+            "$selected": true
+          },
+          "8": {}
         }
       },
       "transform": {
         "translate": {
           "x": -120,
-          "y": -140
+          "y": -240
         },
         "scale": 1.5
       },
@@ -1290,9 +1295,12 @@
   "logsPanelFilter": "all",
   "selectedStylePropertyName": "",
   "lvglPart": "MAIN",
-  "lvglState": "CHECKED",
+  "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "MARGIN"
+    "MARGIN",
+    "POSITION AND SIZE",
+    "OUTLINE",
+    "TEXT"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
