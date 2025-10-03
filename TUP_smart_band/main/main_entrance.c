@@ -6,6 +6,7 @@
 #include "ui/screens.h"
 #include "wifi_connect.h"
 #include "nvs_flash.h"
+#include "buzzer.h"
 //#include "http_server.h"
 
 #define I2C_MASTER_SCL 10
@@ -32,6 +33,7 @@ void app_main(void)
 	init_rtc();
 	init_qmi8658();
 	
+	buzz();
 	    /* Initialize NVS. this is very important for wifi and bluetooth*/
     esp_err_t ret = nvs_flash_init();
     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
