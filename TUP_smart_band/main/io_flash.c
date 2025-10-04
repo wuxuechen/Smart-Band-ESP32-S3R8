@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
+static const char *TAG = "IO_FLASH";
+
 void save_data_to_nvs(const char *key, const char *value) {
     nvs_handle_t my_handle;
     esp_err_t err;
@@ -10,7 +12,7 @@ void save_data_to_nvs(const char *key, const char *value) {
     // Open NVS storage (namespace "storage")
     err = nvs_open("storage", NVS_READWRITE, &my_handle);
     if (err != ESP_OK) {
-        printf("Error opening NVS: %s\n", esp_err_to_name(err));
+        ESP_LOGI(TAG,"Error opening NVS: %s\n", esp_err_to_name(err));
         return;
     }
 
@@ -29,7 +31,7 @@ void read_data_from_nvs(const char *key, char *value, size_t size) {
 
     err = nvs_open("storage", NVS_READONLY, &my_handle);
     if (err != ESP_OK) {
-        printf("Error opening NVS: %s\n", esp_err_to_name(err));
+        ESP_LOGI(TAG,"Error opening NVS: %s\n", esp_err_to_name(err));
         return;
     }
 
@@ -39,11 +41,11 @@ void read_data_from_nvs(const char *key, char *value, size_t size) {
     if (err == ESP_OK) {
         char *tmp = malloc(required_size);
         nvs_get_str(my_handle, key, tmp, &required_size);
-        printf("Read from NVS: %s = %s\n", key, tmp);
+        ESP_LOGI(TAG,"Read from NVS: %s = %s\n", key, tmp);
         snprintf(value, size, "%s", tmp);
         free(tmp);
     } else {
-        printf("No value found for %s\n", key);
+        ESP_LOGI(TAG,"No value found for %s\n", key);
     }
 
     nvs_close(my_handle);
@@ -70,6 +72,6 @@ void parse_and_save(const char *input) {
         init_variables_time();
     }
     else {
-        printf("Ignored input: %s\n", input);
+        ESP_LOGI(TAG,"Ignored input: %s\n", input);
     }
 }
