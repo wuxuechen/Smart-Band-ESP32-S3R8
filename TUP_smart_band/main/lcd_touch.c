@@ -14,6 +14,7 @@
 #include <string.h>
 #include "ui/images.h"
 #include "io_flash.h"
+#include "pcf85063.h"
 /* LCD settings */
 #define LCD_SPI_NUM (SPI2_HOST)
 #define LCD_PIXEL_CLK_HZ (40 * 1000 * 1000)
@@ -128,6 +129,11 @@ err:
 #if USE_TOUCH
 static void lvgl_touch_cb(lv_indev_drv_t *drv, lv_indev_data_t *data)
 {
+	if (!screen_on) {
+        // Screen is dark → ignore all touches
+        data->state = LV_INDEV_STATE_REL;
+        return;
+    }
     esp_lcd_touch_handle_t tp = (esp_lcd_touch_handle_t)drv->user_data;
     assert(tp);
 
@@ -381,6 +387,29 @@ void init_ui_variables(){
 	lv_obj_set_y(objects.setttings_username, current_y);
 }
 
+void init_variables_time(){
+	read_data_from_nvs("TIME",TIME,DATA_SIZE);
+	uint8_t values[7];
+    char buf[32];
+    strncpy(buf, TIME, sizeof(buf));
+    buf[sizeof(buf) - 1] = '\0';  // safety
+
+    char *token = strtok(buf, "-");
+    int i = 0;
+    while (token != NULL && i < 7) {
+        values[i++] = (uint8_t)atoi(token);
+        token = strtok(NULL, "-");
+    }
+
+    if (i == 7) {
+        rtc_set_time(values[0], values[1], values[2],
+                     values[3], values[4], values[5]-1, values[6]);
+    } else {
+        printf("Invalid time string: %s\n", TIME);
+    }
+}
+
+
 void init_variables(){
 	char ssid_pswd[DATA_SIZE*2] = {0};
 	read_data_from_nvs("WIFI",ssid_pswd,DATA_SIZE*2);
@@ -395,8 +424,8 @@ void init_variables(){
         strncpy(WIFI_PASS, comma_pos + 1, DATA_SIZE - 1);
         WIFI_PASS[DATA_SIZE - 1] = '\0';
     }
-    printf("SSID: %s\n", WIFI_SSID);
-    printf("PASS: %s\n", WIFI_PASS);
+    ESP_LOGI(TAG,"SSID: %s\n", WIFI_SSID);
+    ESP_LOGI(TAG,"PASS: %s\n", WIFI_PASS);
 }
 
 void app_main_display(void)
@@ -406,6 +435,7 @@ void app_main_display(void)
     ui_init();
     init_ui_variables();
     init_variables();
+    init_variables_time();
     lvgl_update_queue = xQueueCreate(10, sizeof(lvgl_msg_t));
     if (!lvgl_update_queue) {
 	    ESP_LOGE(TAG, "Failed to create LVGL update queue");

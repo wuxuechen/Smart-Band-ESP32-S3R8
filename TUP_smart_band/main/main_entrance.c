@@ -7,6 +7,7 @@
 #include "wifi_connect.h"
 #include "nvs_flash.h"
 #include "buzzer.h"
+#include "keys.h"
 //#include "http_server.h"
 
 #define I2C_MASTER_SCL 10
@@ -28,7 +29,7 @@ void i2c_bus_init(void) {
 
 void app_main(void)
 {
-	
+	keys_init();
 	i2c_bus_init();
 	init_rtc();
 	init_qmi8658();
