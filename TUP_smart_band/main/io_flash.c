@@ -2,6 +2,9 @@
 #include "lcd_touch.h"
 #include <stdio.h>
 #include <string.h>
+#include "wifi_connect.h"
+
+static const char *TAG = "IO_FLASH";
 
 static const char *TAG = "IO_FLASH";
 
@@ -65,6 +68,9 @@ void parse_and_save(const char *input) {
         // Key is "WIFI", value after ':'
         save_data_to_nvs("WIFI", input + 5);
         init_variables();
+        update_ssid();
+        wifi_switch(false);
+    	wifi_switch(true);
     }
     else if (strncmp(input, "TIME:", 5) == 0) {
         // Key is "WIFI", value after ':'
