@@ -129,6 +129,11 @@ err:
 #if USE_TOUCH
 static void lvgl_touch_cb(lv_indev_drv_t *drv, lv_indev_data_t *data)
 {
+	if (!screen_on) {
+        // Screen is dark → ignore all touches
+        data->state = LV_INDEV_STATE_REL;
+        return;
+    }
     esp_lcd_touch_handle_t tp = (esp_lcd_touch_handle_t)drv->user_data;
     assert(tp);
 
@@ -419,8 +424,8 @@ void init_variables(){
         strncpy(WIFI_PASS, comma_pos + 1, DATA_SIZE - 1);
         WIFI_PASS[DATA_SIZE - 1] = '\0';
     }
-    printf("SSID: %s\n", WIFI_SSID);
-    printf("PASS: %s\n", WIFI_PASS);
+    ESP_LOGI(TAG,"SSID: %s\n", WIFI_SSID);
+    ESP_LOGI(TAG,"PASS: %s\n", WIFI_PASS);
 }
 
 void app_main_display(void)

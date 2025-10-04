@@ -4,6 +4,7 @@
 #include "nvs_flash.h"
 #include "nvs.h"
 #include "lcd_touch.h"
+#include "esp_log.h"
 
 void save_data_to_nvs(const char *key, const char *value);
 

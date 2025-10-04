@@ -101,33 +101,10 @@ static void wifi_event_handler(void* arg, esp_event_base_t event_base,
                                int32_t event_id, void* event_data)
 {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
-		
-		wifi_config_t wifi_config = {0};
-        // Set authmode
-		wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
-		
-		// Copy SSID and password safely
-		strncpy((char *)wifi_config.sta.ssid, WIFI_SSID, sizeof(wifi_config.sta.ssid) - 1);
-		wifi_config.sta.ssid[sizeof(wifi_config.sta.ssid) - 1] = 0;  // null-terminate
-		
-		strncpy((char*)wifi_config.sta.password, WIFI_PASS, sizeof(wifi_config.sta.password) - 1);
-		wifi_config.sta.password[sizeof(wifi_config.sta.password) - 1] = 0;  // null-terminate
-        ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
         esp_wifi_connect();
     } else if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
         xEventGroupClearBits(wifi_event_group, WIFI_CONNECTED_BIT);
         ESP_LOGI(TAG_WiFi, "Disconnected, reconnecting...");
-        	wifi_config_t wifi_config = {0};
-        // Set authmode
-		wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
-		
-		// Copy SSID and password safely
-		strncpy((char *)wifi_config.sta.ssid, WIFI_SSID, sizeof(wifi_config.sta.ssid) - 1);
-		wifi_config.sta.ssid[sizeof(wifi_config.sta.ssid) - 1] = 0;  // null-terminate
-		
-		strncpy((char*)wifi_config.sta.password, WIFI_PASS, sizeof(wifi_config.sta.password) - 1);
-		wifi_config.sta.password[sizeof(wifi_config.sta.password) - 1] = 0;  // null-terminate
-        ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
         esp_wifi_connect();
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
         xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_BIT);
@@ -192,6 +169,24 @@ void wifi_init_sta(void)
     xEventGroupWaitBits(wifi_event_group, WIFI_CONNECTED_BIT, pdFALSE, pdTRUE, portMAX_DELAY);
     ESP_LOGI(TAG_WiFi, "WiFi connection established.");
 }
+
+void update_ssid(){
+	wifi_config_t wifi_config = {0};  // zero-initialize
+
+	// Set authmode
+	wifi_config.sta.threshold.authmode = WIFI_AUTH_WPA2_PSK;
+	
+	// Copy SSID and password safely
+	strncpy((char *)wifi_config.sta.ssid, WIFI_SSID, sizeof(wifi_config.sta.ssid) - 1);
+	wifi_config.sta.ssid[sizeof(wifi_config.sta.ssid) - 1] = 0;  // null-terminate
+	
+	strncpy((char*)wifi_config.sta.password, WIFI_PASS, sizeof(wifi_config.sta.password) - 1);
+	wifi_config.sta.password[sizeof(wifi_config.sta.password) - 1] = 0;  // null-terminate
+
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
+}
+
 
 static bool wifi_initialized = false;
 
