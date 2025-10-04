@@ -64,6 +64,11 @@ void parse_and_save(const char *input) {
         save_data_to_nvs("WIFI", input + 5);
         init_variables();
     }
+    else if (strncmp(input, "TIME:", 5) == 0) {
+        // Key is "WIFI", value after ':'
+        save_data_to_nvs("TIME", input + 5);
+        init_variables_time();
+    }
     else {
         printf("Ignored input: %s\n", input);
     }

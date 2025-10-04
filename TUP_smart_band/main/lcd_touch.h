@@ -99,4 +99,6 @@ void init_ui_variables();
 
 void init_variables();
 
+void init_variables_time();
+
 #endif //LCD_TP_MANAGER_H

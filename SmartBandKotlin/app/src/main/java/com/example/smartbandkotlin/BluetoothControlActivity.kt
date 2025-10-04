@@ -68,6 +68,20 @@ class BluetoothControlActivity : AppCompatActivity() {
         bluetoothGatt = device.connectGatt(this, false, gattCallback)
     }
 
+    private fun getCurrentTimeString(): String {
+        val cal = Calendar.getInstance()
+
+        val hours = cal.get(Calendar.HOUR_OF_DAY)   // 0–23
+        val minutes = cal.get(Calendar.MINUTE)
+        val seconds = cal.get(Calendar.SECOND)
+        val day = cal.get(Calendar.DAY_OF_MONTH)
+        val weekday = (cal.get(Calendar.DAY_OF_WEEK) - 1) % 7 // Sunday=0 … Saturday=6
+        val month = cal.get(Calendar.MONTH) + 1 // Calendar.MONTH is 0–11
+        val year = cal.get(Calendar.YEAR) % 100 // Take last 2 digits
+
+        return "TIME:$hours-$minutes-$seconds-$day-$weekday-$month-$year"
+    }
+
     private val gattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
@@ -97,6 +111,8 @@ class BluetoothControlActivity : AppCompatActivity() {
                         Toast.makeText(this@BluetoothControlActivity, "No writable characteristic found!", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this@BluetoothControlActivity, "Ready to send data", Toast.LENGTH_SHORT).show()
+                        val timeStr = getCurrentTimeString()
+                        sendMessage(timeStr)
                     }
                 }
             } else {

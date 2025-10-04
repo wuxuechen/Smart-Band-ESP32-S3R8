@@ -6,4 +6,5 @@ extern char version[];
 extern char WIFI_SSID[];
 extern char WIFI_PASS[];
 extern char USERNAME[];
+extern char TIME[];
 #endif // CONSTANT_HEADER_H

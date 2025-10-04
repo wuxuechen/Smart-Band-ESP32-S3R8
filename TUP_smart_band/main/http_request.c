@@ -223,7 +223,8 @@ void fetch_weather_gait()
     }
     char post_data[256];  // Buffer to hold the JSON string
     snprintf(post_data, sizeof(post_data), 
-             "{\"username\": \"joseph\", \"stride\": %.2f, \"cadence\": %.2f, \"pace\": %.2f, \"steps\": %d}",
+             "{\"username\": \"%s\", \"stride\": %.2f, \"cadence\": %.2f, \"pace\": %.2f, \"steps\": %d}",
+             USERNAME,
              msg.gait.stride_length,   // Use stride from msg.gait
              msg.gait.cadence,  // Use cadence from msg.gait
              msg.gait.pace,     // Use pace from msg.gait
